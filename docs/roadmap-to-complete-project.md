@@ -52,11 +52,11 @@ These rows are the **real** “percent complete” for the **game + AI mission**
 
 | Priority | Milestone | Done when |
 |----------|-----------|------------|
-| **R0** | **Explicit win/lose game vertical** | **Done (v1):** `Observation.mission.outcome` (`won` / `lost`) when **`farm-stub`** harvest completes; **`expect_mission_outcome`** in scenario JSON; **`examples/farm_demo_loop.json`** asserts **`won`**; tests **`scenario_mission_offline`**, sim **`farm_demo_loop_plant_grow_harvest`**. HTTP parity: same JSON from **`aetherforge_serve`** with **`farm-stub`**. Extend with **non-farm** outcomes later. |
-| **R1** | **Flagship scenario depth** | A **documented** reference script (JSON or multi-step) that exercises **multiple goals** beyond the short `farm_demo_loop` — still stub content, but **represents** the Harvest-Moon-style loop the Director calls for. |
+| **R0** | **Explicit win/lose game vertical** | **Done (v1):** `Observation.mission.outcome` (`won` / `lost`) when **`farm-stub`** harvest completes; **`expect_mission_outcome`** in scenario JSON; **`examples/farm_demo_loop.json`** asserts **`won`**; tests **`scenario_mission_offline`**, sim **`farm_demo_loop_plant_grow_harvest`**. HTTP parity to **`won`**: CI job **`farm-mission-http-e2e`** (R4). Extend with **non-farm** outcomes later. |
+| **R1** | **Flagship scenario depth** | **Done (v1):** **`examples/flagship_farm_two_cycles.json`** (two plant→grow→harvest cycles) + **`docs/flagship-scenario.md`**; offline test **`scenario_flagship_offline`**. |
 | **R2** | **Client surface for “play”** | Move past compile-only platform: **either** [`platform-headed-roadmap.md`](platform-headed-roadmap.md) **P1** (window + clean exit) **or** a minimal **web/terminal HUD** that renders observation state — so “game” is not only JSON in a terminal. |
 | **R3** | **Runtime / embedding decision** | **ADR or doc**: Godot vs Unity vs web-first vs Rust-only — **committed** tradeoffs, how `aetherforge_serve` or in-proc sim plugs in. |
-| **R4** | **Autonomous playthrough proof** | **CI or scheduled job** runs an agent (or scenario harness) through the flagship path to **R0’s** win condition with **assertions** — the “AI QA with no human gate” bar. |
+| **R4** | **Autonomous playthrough proof** | **Done (v1):** CI job **`farm-mission-http-e2e`** runs **`aetherforge_scenario`** (HTTP) on **`examples/flagship_farm_http.json`** with **`farm-stub`** serve — asserts **`mission.outcome`** **`won`** end-to-end. |
 | **R5** | **NL / designer path (optional but on-mission)** | Sidecar or in-process path from natural language to **validated** actions — milestone table in [`nl-agentic-hooks.md`](nl-agentic-hooks.md) advanced beyond stub **501** where product requires it. |
 
 Detail and phase mapping: [`director-program-roadmap.md`](director-program-roadmap.md).

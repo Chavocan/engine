@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- **R1 flagship + R4 HTTP proof:** **`examples/flagship_farm_two_cycles.json`**, **`examples/flagship_farm_http.json`**; **`docs/flagship-scenario.md`**; test **`scenario_flagship_offline`**; CI job **`farm-mission-http-e2e`** ( **`aetherforge_scenario`** HTTP to **`mission.outcome`** **`won`** ).
 - **R0 win vertical:** **`Observation.mission.outcome`** (`won` / `lost`); **`Observation.schema_version`** **`1.2.0`**; scenario field **`expect_mission_outcome`**; **`examples/farm_demo_loop.json`** asserts **`won`**; tests **`scenario_mission_offline`**; schema fragment **`observation_mission_property.json`**; Python **`MissionSnapshot`**.
 - **Roadmap realignment:** **`docs/roadmap-to-complete-project.md`** — **North star** + **§ On the rails** (R0–R5) for Director mission; kernel v0.1 marked **closed** in a dedicated section. **`agent-master-plan.md`**, **`director-program-roadmap.md`**, **`README`**, **`.cursor/rules`**: mission ≠ kernel complete.
 - **Usability:** **`docs/getting-started.md`** end-to-end path (clone → headless → scenario → HTTP → SDK); **`scripts/dev_smoke.sh`** / **`scripts/dev_smoke.ps1`** quick smoke (headless + offline farm scenario).

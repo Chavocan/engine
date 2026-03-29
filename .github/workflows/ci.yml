@@ -35,8 +35,8 @@ jobs:
           fi
       - name: Demo loop (offline farm scenario, farm-stub)
         run: cargo run -p aetherforge_cli --features farm-stub --bin aetherforge_scenario -- --offline examples/farm_demo_loop.json
-      - name: R0 mission outcome (scenario expect_mission_outcome, farm-stub)
-        run: cargo test -p aetherforge_cli --features farm-stub --test scenario_mission_offline --verbose
+      - name: R0 / R1 mission + flagship offline (farm-stub)
+        run: cargo test -p aetherforge_cli --features farm-stub --test scenario_mission_offline --test scenario_flagship_offline --verbose
 
   python:
     runs-on: ubuntu-latest
@@ -86,3 +86,29 @@ jobs:
             exit 1
           fi
           pytest python/aetherforge_sdk/tests/test_client_integration.py -v
+
+  farm-mission-http-e2e:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+      - name: Build aetherforge_serve (farm-stub)
+        run: cargo build -p aetherforge_cli --features farm-stub --bin aetherforge_serve --verbose
+      - name: R4 flagship HTTP scenario (expect_mission_outcome won)
+        run: |
+          set -euo pipefail
+          ./target/debug/aetherforge_serve &
+          SERVER_PID=$!
+          trap 'kill $SERVER_PID 2>/dev/null || true' EXIT
+          code=""
+          for i in $(seq 1 60); do
+            code=$(curl -s -o /dev/null -w "%{http_code}" -X POST http://127.0.0.1:8787/v1/sessions \
+              -H "Content-Type: application/json" -d '{}')
+            if [ "$code" = "201" ]; then break; fi
+            sleep 1
+          done
+          if [ "$code" != "201" ]; then
+            echo "server did not become ready (last HTTP code: ${code:-empty})" >&2
+            exit 1
+          fi
+          cargo run -p aetherforge_cli --features farm-stub --bin aetherforge_scenario -- examples/flagship_farm_http.json

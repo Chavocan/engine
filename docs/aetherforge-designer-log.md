@@ -4,6 +4,14 @@ Append-only implementation notes. Mirror bullet labels from `aetherforge-designe
 
 ---
 
+## 2026-03-29 (R1 flagship + R4 HTTP mission E2E)
+
+- **Accomplished this cycle:** **`flagship_farm_two_cycles.json`**, **`flagship_farm_http.json`**, **`docs/flagship-scenario.md`**, **`scenario_flagship_offline`**, CI **`farm-mission-http-e2e`**; roadmap **R1** / **R4** rows **done (v1)**; **`director-program-roadmap`** phases 4–5 / 7 adjusted; **`phase1d-verification`**, **`CONTRIBUTING`**, **`CHANGELOG`**.
+- **Processes used:** `cargo test -p aetherforge_cli --features farm-stub --test scenario_flagship_offline`; schema drift script unchanged.
+- **Pitfalls / observations:** R4 v1 is **scenario harness** + HTTP assert, not a free-form agent loop — phase 7 stays **partial** until that exists.
+- **Learnings / best practices:** Same JSON shape offline and HTTP (**`base_url`** only) keeps CI and local parity obvious.
+- **Next cycle action items:** **R2** client surface or **R3** runtime ADR per product priority.
+
 ## 2026-03-29 (R0 — mission outcome + scenario assert)
 
 - **Accomplished this cycle:** **`MissionOutcome`**, **`Observation.mission`**, schema **1.2.0**, **`expect_mission_outcome`** in **`aetherforge_cli::scenario`**, **`farm_demo_loop.json`**, **`scenario_mission_offline`** test, CI step, **`observation_mission_property.json`** drift, Python **`MissionSnapshot`**, roadmap **R0** row **done (v1)**.

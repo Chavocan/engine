@@ -45,3 +45,7 @@ serde_json = "1.0"
 [[test]]
 name = "scenario_mission_offline"
 required-features = ["farm-stub"]
+
+[[test]]
+name = "scenario_flagship_offline"
+required-features = ["farm-stub"]

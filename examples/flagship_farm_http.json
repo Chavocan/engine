@@ -1,0 +1,17 @@
+{
+  "base_url": "http://127.0.0.1:8787",
+  "seed": 42,
+  "expect_mission_outcome": "won",
+  "steps": [
+    { "use": "single", "kind": "farm_plant", "expect_tick": 1 },
+    { "use": "single", "kind": "farm_advance_day", "expect_tick": 2 },
+    { "use": "single", "kind": "farm_advance_day", "expect_tick": 3 },
+    { "use": "single", "kind": "farm_advance_day", "expect_tick": 4 },
+    { "use": "single", "kind": "farm_harvest", "expect_tick": 5 },
+    { "use": "single", "kind": "farm_plant", "expect_tick": 6 },
+    { "use": "single", "kind": "farm_advance_day", "expect_tick": 7 },
+    { "use": "single", "kind": "farm_advance_day", "expect_tick": 8 },
+    { "use": "single", "kind": "farm_advance_day", "expect_tick": 9 },
+    { "use": "single", "kind": "farm_harvest", "expect_tick": 10 }
+  ]
+}
