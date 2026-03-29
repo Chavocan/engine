@@ -17,4 +17,4 @@ cd python/aetherforge_sdk && pip install -e ".[dev]" && ruff check . && python s
 
 ### Publish metadata (Python)
 
-`python/aetherforge_sdk/pyproject.toml` includes `[project.urls]` pointing at [github.com/Jabraham85/Engine](https://github.com/Jabraham85/Engine). Adjust if the canonical URL changes.
+`python/aetherforge_sdk/pyproject.toml` includes `[project.urls]` pointing at [github.com/Chavocan/engine](https://github.com/Chavocan/engine). Adjust if the canonical URL changes.

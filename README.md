@@ -4,10 +4,10 @@ Phase 1c workspace: Rust simulation kernel + stub platform/game + control hook +
 
 ## Repository
 
-Canonical Git remote: **[github.com/Jabraham85/Engine](https://github.com/Jabraham85/Engine)**
+Canonical Git remote: **[github.com/Chavocan/engine](https://github.com/Chavocan/engine)**
 
 ```bash
-git clone https://github.com/Jabraham85/Engine.git
+git clone https://github.com/Chavocan/engine.git
 ```
 
 ## Prerequisites

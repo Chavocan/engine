@@ -13,8 +13,8 @@ authors = [{ name = "AetherForge contributors" }]
 keywords = ["aetherforge", "game-engine", "httpx", "hytale-adjacent"]
 
 [project.urls]
-Homepage = "https://github.com/Jabraham85/Engine"
-Repository = "https://github.com/Jabraham85/Engine"
+Homepage = "https://github.com/Chavocan/engine"
+Repository = "https://github.com/Chavocan/engine"
 classifiers = [
     "Development Status :: 3 - Alpha",
     "Intended Audience :: Developers",
