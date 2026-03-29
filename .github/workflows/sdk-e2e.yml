@@ -1,0 +1,25 @@
+# Optional: needs a reachable control plane from the runner (not localhost on GitHub-hosted).
+name: SDK E2E
+
+on:
+  workflow_dispatch:
+    inputs:
+      base_url:
+        description: "Base URL, e.g. https://your-tunnel.example/ or self-hosted runner localhost"
+        required: true
+        default: "http://127.0.0.1:8787"
+        type: string
+
+jobs:
+  e2e:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install -e "./python/aetherforge_sdk[dev]"
+      - name: Live integration test
+        env:
+          AETHERFORGE_TEST_URL: ${{ inputs.base_url }}
+        run: pytest python/aetherforge_sdk/tests/test_client_integration.py -v

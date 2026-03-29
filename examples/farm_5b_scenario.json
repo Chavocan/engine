@@ -1,0 +1,7 @@
+{
+  "seed": 11,
+  "steps": [
+    { "use": "single", "kind": "farm_plant", "expect_tick": 1 },
+    { "use": "single", "kind": "farm_advance_day", "expect_tick": 2 }
+  ]
+}

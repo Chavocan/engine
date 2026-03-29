@@ -1,0 +1,37 @@
+# Regression-critical: keep in sync with CONTRIBUTING.md § CI layout
+name: CI
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  rust:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+      - name: cargo test
+        run: cargo test --verbose
+      - name: SSE observe stream (feature sse-obs)
+        run: cargo test -p aetherforge_control --features sse-obs observe_stream --verbose
+      - name: Player HTTP-only source boundary
+        run: bash scripts/check_player_no_sim_import.sh
+      - name: Demo loop (offline farm scenario, farm-stub)
+        run: cargo run -p aetherforge_cli --features farm-stub --bin aetherforge_scenario -- --offline examples/farm_demo_loop.json
+
+  python:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install SDK (dev)
+        run: pip install -e "./python/aetherforge_sdk[dev]"
+      - name: Ruff
+        run: ruff check python/aetherforge_sdk
+      - name: Observation schema vs SDK
+        run: python python/aetherforge_sdk/scripts/check_observation_contract.py
+      - name: Pytest (mock; no live server)
+        run: pytest python/aetherforge_sdk/tests -q

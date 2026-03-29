@@ -1,0 +1,16 @@
+[workspace]
+resolver = "2"
+members = [
+    "crates/aetherforge_sim",
+    "crates/aetherforge_schemas",
+    "crates/aetherforge_farm",
+    "crates/aetherforge_control",
+    "crates/aetherforge_platform",
+    "crates/aetherforge_game",
+    "crates/aetherforge_cli",
+]
+
+[workspace.package]
+edition = "2021"
+license = "MIT OR Apache-2.0"
+repository = "https://github.com/Jabraham85/Engine"

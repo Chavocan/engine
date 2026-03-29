@@ -1,0 +1,12 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://aetherforge.local/schemas/v1/control_envelope.schema.json",
+  "title": "ControlEnvelope",
+  "type": "object",
+  "required": ["schema_version"],
+  "properties": {
+    "schema_version": { "type": "string" },
+    "payload": {}
+  },
+  "additionalProperties": true
+}

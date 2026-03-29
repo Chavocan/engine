@@ -1,0 +1,6 @@
+{
+  "seed": 0,
+  "steps": [
+    { "use": "single", "kind": "noop", "expect_tick": 1 }
+  ]
+}

@@ -1,0 +1,13 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://aetherforge.local/schemas/v1/state.schema.json",
+  "title": "State",
+  "type": "object",
+  "required": ["schema_version", "tick"],
+  "properties": {
+    "schema_version": { "type": "string" },
+    "tick": { "type": "integer", "minimum": 0 },
+    "entities": { "type": "array", "items": { "type": "object" } }
+  },
+  "additionalProperties": true
+}

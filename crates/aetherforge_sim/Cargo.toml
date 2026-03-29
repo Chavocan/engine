@@ -1,0 +1,17 @@
+[package]
+name = "aetherforge_sim"
+version = "0.1.0"
+edition.workspace = true
+license.workspace = true
+repository.workspace = true
+
+[features]
+default = []
+farm-stub = []
+
+[dependencies]
+aetherforge_farm = { path = "../aetherforge_farm" }
+rand = { version = "0.8", features = ["std_rng"] }
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+tracing = "0.1"

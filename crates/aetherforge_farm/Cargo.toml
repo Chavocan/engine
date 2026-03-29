@@ -1,0 +1,9 @@
+[package]
+name = "aetherforge_farm"
+version = "0.1.0"
+edition.workspace = true
+license.workspace = true
+repository.workspace = true
+
+[dependencies]
+serde = { version = "1.0", features = ["derive"] }
