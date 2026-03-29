@@ -4,6 +4,14 @@ Append-only implementation notes. Mirror bullet labels from `aetherforge-designe
 
 ---
 
+## 2026-03-29 (usable engine — first-run path)
+
+- **Accomplished this cycle:** **`docs/getting-started.md`** (clone → test → headless → farm scenario → HTTP curl → Python SDK); **`scripts/dev_smoke.sh`** / **`dev_smoke.ps1`**; **`README`**, **`CONTRIBUTING`**, **`AGENTS`** links; **`CHANGELOG`** Unreleased.
+- **Processes used:** `powershell -File scripts/dev_smoke.ps1` (green).
+- **Pitfalls / observations:** Full **`cargo test`** remains the deep gate; smoke is for fast feedback only.
+- **Learnings / best practices:** “Usable” for this repo means **documented linear path + scripts**, not new engine features.
+- **Next cycle action items:** Optional CI job running **`dev_smoke.sh`** only if we need redundancy vs golden script.
+
 ## 2026-03-29 (finish lines 1–4 — scoped plan implementation)
 
 - **Accomplished this cycle:** **`AETHERFORGE_HTTP_ADDR`**; **ADR 0003** (TLS/auth at proxy); **`docs/deployment.md`**, **`release-closure-checklist.md`**, **`director-program-roadmap.md`**; **`agent-master-plan.md`** finish-line table; schema drift **`world`** fragment; **`nl-interpret-stub`** + CI; **`http_concurrent`** 48-fan-out test; pushed **`main`** and **`v0.1.0`** to **`origin`**.

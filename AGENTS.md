@@ -17,6 +17,7 @@ This repository expects **AI coding agents** to drive implementation and verific
 
 ## Pointers
 
+- **First-run (humans):** [`docs/getting-started.md`](docs/getting-started.md)
 - **Roadmap (engine scope):** [`docs/roadmap-to-complete-project.md`](docs/roadmap-to-complete-project.md)
 - **Master backlog / finish lines:** [`docs/agent-master-plan.md`](docs/agent-master-plan.md)
 - **Ops closure (tags, CI):** [`docs/release-closure-checklist.md`](docs/release-closure-checklist.md)

@@ -2,6 +2,8 @@
 
 Phase 1c workspace: Rust simulation kernel + stub platform/game + control hook + CLI headless runner.
 
+**New to the repo?** Follow **[`docs/getting-started.md`](docs/getting-started.md)** — clone → test → headless → offline farm scenario → HTTP → Python SDK in one linear path. Quick smoke: **`bash scripts/dev_smoke.sh`** or **`powershell -File scripts/dev_smoke.ps1`**.
+
 ## Repository
 
 Canonical Git remote: **[github.com/Chavocan/engine](https://github.com/Chavocan/engine)**
@@ -75,6 +77,7 @@ See **`python/aetherforge_sdk/README.md`** — `AetherForgeClient` + Pydantic mo
 
 ## Docs
 
+- `docs/getting-started.md` — **first-run path** (headless, scenario, HTTP, SDK)
 - `docs/roadmap-to-complete-project.md` — **engine product roadmap** (milestone table + continuous QA)
 - `docs/demo-showcase.md` — **5-minute demo script**
 - `docs/aetherforge-director-log.md` / `docs/aetherforge-designer-log.md` — program logs

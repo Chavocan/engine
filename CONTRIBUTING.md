@@ -20,6 +20,8 @@
 
 ### Local parity (recommended before push)
 
+**Fast smoke (no full test suite):** `bash scripts/dev_smoke.sh` or `powershell -NoProfile -ExecutionPolicy Bypass -File scripts/dev_smoke.ps1` — headless + offline farm scenario.
+
 ```bash
 cargo test
 # `aetherforge_cli` includes `scenario_tick_json` tests for `aetherforge_scenario --emit-tick-json` / `--quiet`.

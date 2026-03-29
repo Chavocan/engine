@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- **Usability:** **`docs/getting-started.md`** end-to-end path (clone → headless → scenario → HTTP → SDK); **`scripts/dev_smoke.sh`** / **`scripts/dev_smoke.ps1`** quick smoke (headless + offline farm scenario).
 - **Deployment:** **`AETHERFORGE_HTTP_ADDR`** for **`aetherforge_serve`** bind (default **`127.0.0.1:8787`**); **`docs/deployment.md`** operator index; **ADR [`docs/adr/0003-deployment-tls-and-auth.md`](docs/adr/0003-deployment-tls-and-auth.md)** (TLS/auth at proxy; in-process deferred).
 - **Finish-line docs:** **`docs/release-closure-checklist.md`**, **`docs/director-program-roadmap.md`**; **`docs/agent-master-plan.md`** finish-line table.
 - **NL-2 stub:** Cargo feature **`nl-interpret-stub`** — **`POST /v1/sessions/{id}/interpret`** returns **501** + `NL_INTERPRET_NOT_IMPLEMENTED`; test **`nl_interpret_stub`** CI.
