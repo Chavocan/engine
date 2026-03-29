@@ -22,7 +22,7 @@ Living summary aligned with the Cursor **AetherForge Director** plan. Update whe
 | P2 | **Schema CI** | Generated or checked schemas match `schemas/v1/` in CI. |
 | P2 | **SSE caps + play-log stderr** | Per `docs/backlog-post-v0.1.md`. |
 | P3 | **Headed wgpu smoke** | Feature-gated window or documented CI skip. |
-| P3 | **Product polish** | `LICENSE`, `SECURITY.md`, NL/agentic command path documented. |
+| P3 | **Product polish** | **Partial:** `LICENSE-MIT`, `LICENSE-APACHE`, `SECURITY.md`, `docs/nl-agentic-hooks.md`; README License/Security sections. |
 
 ## Continuous QA
 

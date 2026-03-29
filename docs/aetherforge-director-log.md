@@ -43,3 +43,11 @@ Append-only session summaries for the AetherForge program. Mirror bullet labels 
 - **Pitfalls / observations:** This environment still has **no `cargo`** — run **`cargo test -p aetherforge_control --features farm-stub`** locally or rely on **GitHub Actions**.
 - **Learnings / best practices:** Agent mode removes Plan-mode blocks on Rust sources.
 - **Next cycle action items:** Push and confirm CI green; **`v0.1.0`** checklist when ready.
+
+## 2026-03-29 (P3a — license, security, NL stub + relay B)
+
+- **Accomplished this cycle:** **`LICENSE-MIT`**, **`LICENSE-APACHE`**, **`SECURITY.md`**, **`docs/nl-agentic-hooks.md`**; README **License** / **Security**; roadmap + CHANGELOG; resumed **`chat_a`** with **Phase P3a** brief for **B** (verify + tests + designer log).
+- **Processes used:** Relay Director message + parallel repo commits; Apache 2.0 text from [apache.org/licenses/LICENSE-2.0.txt](https://www.apache.org/licenses/LICENSE-2.0.txt).
+- **Pitfalls / observations:** SECURITY contact is advisory-first until maintainers add email.
+- **Learnings / best practices:** NL path stays sidecar-first per spec.
+- **Next cycle action items:** **B** confirmation; **P1** `aetherforge_player` crate split scoping.

@@ -82,3 +82,17 @@ See **`python/aetherforge_sdk/README.md`** — `AetherForgeClient` + Pydantic mo
 - `docs/backlog-post-v0.1.md`
 - `docs/adr/0001-observation-stream-transport.md`
 - `docs/phase9b-sse.md`
+- `docs/nl-agentic-hooks.md` — NL / agentic integration (design stub)
+
+## License
+
+Licensed under either of
+
+- Apache License, Version 2.0 ([`LICENSE-APACHE`](LICENSE-APACHE) or <https://www.apache.org/licenses/LICENSE-2.0>)
+- MIT license ([`LICENSE-MIT`](LICENSE-MIT) or <https://opensource.org/licenses/MIT>)
+
+at your option. SPDX: **`MIT OR Apache-2.0`** (see workspace `Cargo.toml`).
+
+## Security
+
+See [`SECURITY.md`](SECURITY.md) for how to report vulnerabilities.
