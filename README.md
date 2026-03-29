@@ -4,6 +4,8 @@ Phase 1c workspace: Rust simulation kernel + stub platform/game + control hook +
 
 **New to the repo?** Follow **[`docs/getting-started.md`](docs/getting-started.md)** — clone → test → headless → offline farm scenario → HTTP → Python SDK in one linear path. Quick smoke: **`bash scripts/dev_smoke.sh`** or **`powershell -File scripts/dev_smoke.ps1`**.
 
+**Mission (not just kernel):** the **AI-native game** program — win conditions, flagship scenario, client surface, autonomous playthrough proof — lives in **[`docs/roadmap-to-complete-project.md`](docs/roadmap-to-complete-project.md) § On the rails** and [`aetherforge-lead-director.agent.md`](aetherforge-lead-director.agent.md). The v0.1 engine checklist there is **done**; the **product** rows are **open**.
+
 ## Repository
 
 Canonical Git remote: **[github.com/Chavocan/engine](https://github.com/Chavocan/engine)**

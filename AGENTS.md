@@ -18,7 +18,7 @@ This repository expects **AI coding agents** to drive implementation and verific
 ## Pointers
 
 - **First-run (humans):** [`docs/getting-started.md`](docs/getting-started.md)
-- **Roadmap (engine scope):** [`docs/roadmap-to-complete-project.md`](docs/roadmap-to-complete-project.md)
+- **Roadmap:** [`docs/roadmap-to-complete-project.md`](docs/roadmap-to-complete-project.md) — **§ On the rails** is the open **AI game mission**; kernel table above it is **closed** v0.1.
 - **Master backlog / finish lines:** [`docs/agent-master-plan.md`](docs/agent-master-plan.md)
 - **Ops closure (tags, CI):** [`docs/release-closure-checklist.md`](docs/release-closure-checklist.md)
 - **Deployment (bind, TLS ADR):** [`docs/deployment.md`](docs/deployment.md)

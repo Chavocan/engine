@@ -1,6 +1,8 @@
 # Agent master plan — what still needs care
 
-Single place for **agents** to see what is closed, what is operational hygiene, and what is optional follow-on work. The engine roadmap table in [`roadmap-to-complete-project.md`](roadmap-to-complete-project.md) is **complete** for v0.1 engine scope; this doc orders **everything else** worth tracking.
+Single place for **agents** to see what is closed, what is operational hygiene, and what is **still required for the actual product mission**.
+
+**Critical:** The **kernel v0.1** table in [`roadmap-to-complete-project.md`](roadmap-to-complete-project.md) is **closed**. That does **not** mean the **Director mission** (AI-driven game design + full autonomous QA) is complete — see **§ On the rails** in that file. This doc orders **supporting tiers** and **explicit gaps**; **mission work** is tracked in **§ On the rails** and [`director-program-roadmap.md`](director-program-roadmap.md).
 
 ## Finish line definitions (scoped “done”)
 

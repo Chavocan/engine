@@ -4,6 +4,14 @@ Append-only implementation notes. Mirror bullet labels from `aetherforge-designe
 
 ---
 
+## 2026-03-29 (rails — roadmap vs kernel)
+
+- **Accomplished this cycle:** Rewrote **`roadmap-to-complete-project.md`**: **North star**, **Kernel v0.1 (closed)**, **§ On the rails** (R0–R5: win condition, flagship depth, client surface, runtime ADR, autonomous playthrough proof, NL). Updated **`agent-master-plan`**, **`director-program-roadmap`**, **`README`**, **`.cursor/rules/aetherforge-agent-ownership.mdc`**, **`CHANGELOG`**, **`AGENTS`**.
+- **Processes used:** Editorial alignment only.
+- **Pitfalls / observations:** Prior “100% complete” referred only to the **kernel** table — now explicit so agents do not optimize the wrong finish line.
+- **Learnings / best practices:** Single file (**`roadmap-to-complete-project.md`**) holds both **closed** and **open** so scope cannot drift silently.
+- **Next cycle action items:** Implement **R0** (game outcome + asserted tests) as first engineering slice.
+
 ## 2026-03-29 (usable engine — first-run path)
 
 - **Accomplished this cycle:** **`docs/getting-started.md`** (clone → test → headless → farm scenario → HTTP curl → Python SDK); **`scripts/dev_smoke.sh`** / **`dev_smoke.ps1`**; **`README`**, **`CONTRIBUTING`**, **`AGENTS`** links; **`CHANGELOG`** Unreleased.

@@ -107,6 +107,7 @@ cargo run -p aetherforge_player -- --base-url http://127.0.0.1:8787 --seed 1 --p
 
 | Goal | Doc |
 |------|-----|
+| **Mission after kernel** — win conditions, flagship scenario, client, autonomous QA | [`roadmap-to-complete-project.md`](roadmap-to-complete-project.md) **§ On the rails** |
 | Full demo script (recording / stakeholders) | [`demo-showcase.md`](demo-showcase.md) |
 | API shapes and errors | [`phase1c-ai-interface-spec-v0.md`](phase1c-ai-interface-spec-v0.md) |
 | Production deploy (TLS, proxy, rate limits) | [`deployment.md`](deployment.md) |

@@ -1,8 +1,28 @@
-# Roadmap — complete project + demo
+# Roadmap — north star, kernel, and what is still open
 
-Living summary aligned with the Cursor **AetherForge Director** plan. Update when milestones close.
+This file is the **single alignment point** between the **repo** and the **[Lead Director program](../aetherforge-lead-director.agent.md)**.  
+**Finishing the kernel checklist below is not the same as finishing the mission.** The mission is: **an AI can use the stack to design, drive, and QA a game end-to-end** — see **§ On the rails**.
 
-## Done (high level)
+---
+
+## North star (non-negotiable product goal)
+
+From [`aetherforge-lead-director.agent.md`](../aetherforge-lead-director.agent.md):
+
+- **Design** games via APIs / structured tools (and eventually NL), without humans in the loop for routine iteration.
+- **Run** headless simulation with **zero required human input** for scripted or autonomous play.
+- **Receive** rich structured state (observations, logs) for QA and iteration.
+- **Prove** completion with **end-to-end autonomous playthrough** on a **flagship** reference — not only “HTTP returns 200.”
+
+If work only improves the control plane but **does not advance** the table in **§ On the rails**, treat it as **supporting work**, not “we shipped the product.”
+
+---
+
+## Kernel and control plane (v0.1 — closed)
+
+The **AetherForge Engine** workspace hit its **v0.1** scope: sim + HTTP + SDK + CI + farm stub + docs. This section stays as the **record of what shipped**.
+
+### Done (high level)
 
 - Greenfield Rust workspace, simulation kernel, HTTP control plane (`/v1/sessions`, actions, batch, observation, optional SSE stream).
 - Headless binary, serve binary, JSON scenario runner, HTTP-only autonomous player, play logs, session quotas.
@@ -10,30 +30,47 @@ Living summary aligned with the Cursor **AetherForge Director** plan. Update whe
 - Python SDK + contract check script + mock tests; CI (Rust + Python) in `.github/workflows/ci.yml`.
 - Phase design docs under `docs/phase*.md`, ADR 0001, release checklist `docs/release-v0.1.0.md`, backlog `docs/backlog-post-v0.1.md`.
 
-## Remaining for “complete” engine product
+### Kernel checklist (all done)
 
 | Priority | Item | Done when |
 |----------|------|-----------|
-| P0 | **v0.1.0 tag** | **Done:** `CHANGELOG.md` **\[0.1.0\]** dated **2026-03-29**; checklist in `docs/release-v0.1.0.md`; tag **`v0.1.0`** (create locally, push when publishing). |
+| P0 | **v0.1.0 tag** | **Done:** `CHANGELOG.md` **\[0.1.0\]** dated **2026-03-29**; checklist in `docs/release-v0.1.0.md`; tag **`v0.1.0`**. |
 | P0 | **Farm gameplay loop** | **Done (stub):** `farm_harvest` + `farm_demo_loop_plant_grow_harvest` + `examples/farm_demo_loop.json`. |
 | P0 | **Demo showcase doc** | **Done:** `docs/demo-showcase.md` recording checklist verified; offline scenario commands exercised. |
 | P1 | **CI golden playthrough** | **Done:** `scripts/golden_playthrough.sh` + CI step (offline farm + `http_sessions` + `player_http_loop`). |
-| P1 | **Player crate split** | **Done:** `crates/aetherforge_player` (ADR 0002). Verify runtime graph: `cargo tree -p aetherforge_player -e normal` (no `aetherforge_sim`). |
-| P2 | **Schema CI** | **Done:** `python scripts/check_schema_drift.py` + `aetherforge_export_action_schema` (`schema-export`) + farm fragment sync for `observation.schema.json`. |
-| P2 | **SSE caps + play-log stderr** | **Done:** SSE caps + env (`AETHERFORGE_SSE_*`); play log **`AETHERFORGE_PLAY_LOG_STDOUT=1`** (see `docs/phase2c-play-log.md`). |
-| P3 | **Headed wgpu smoke** | **Done:** `cargo build -p aetherforge_platform --features headed-smoke` in CI; binary `aetherforge_wgpu_smoke`. |
-| P3 | **Product polish** | **Done:** `LICENSE-MIT`, `LICENSE-APACHE`, `SECURITY.md`, `docs/nl-agentic-hooks.md`; README License/Security sections. |
+| P1 | **Player crate split** | **Done:** `crates/aetherforge_player` (ADR 0002). `cargo tree -p aetherforge_player -e normal` has no `aetherforge_sim`. |
+| P2 | **Schema CI** | **Done:** `scripts/check_schema_drift.py` + `aetherforge_export_action_schema` + observation fragments. |
+| P2 | **SSE caps + play-log stderr** | **Done:** SSE caps + env (`AETHERFORGE_SSE_*`); play log **`AETHERFORGE_PLAY_LOG_STDOUT=1`**. |
+| P3 | **Headed wgpu smoke** | **Done:** `cargo build -p aetherforge_platform --features headed-smoke`; `aetherforge_wgpu_smoke`. |
+| P3 | **Product polish** | **Done:** `LICENSE-MIT`, `LICENSE-APACHE`, `SECURITY.md`, `docs/nl-agentic-hooks.md`; README License/Security. |
+
+---
+
+## On the rails — Director program (open until proven)
+
+These rows are the **real** “percent complete” for the **game + AI mission**. Order is a guide; parallelize where it makes sense.
+
+| Priority | Milestone | Done when |
+|----------|-----------|------------|
+| **R0** | **Explicit win/lose game vertical** | At least one **scenario or player run** that ends in a **declared outcome** (win / lose / score threshold), not only expected tick — and **automated tests** assert that outcome (offline or HTTP). |
+| **R1** | **Flagship scenario depth** | A **documented** reference script (JSON or multi-step) that exercises **multiple goals** beyond the short `farm_demo_loop` — still stub content, but **represents** the Harvest-Moon-style loop the Director calls for. |
+| **R2** | **Client surface for “play”** | Move past compile-only platform: **either** [`platform-headed-roadmap.md`](platform-headed-roadmap.md) **P1** (window + clean exit) **or** a minimal **web/terminal HUD** that renders observation state — so “game” is not only JSON in a terminal. |
+| **R3** | **Runtime / embedding decision** | **ADR or doc**: Godot vs Unity vs web-first vs Rust-only — **committed** tradeoffs, how `aetherforge_serve` or in-proc sim plugs in. |
+| **R4** | **Autonomous playthrough proof** | **CI or scheduled job** runs an agent (or scenario harness) through the flagship path to **R0’s** win condition with **assertions** — the “AI QA with no human gate” bar. |
+| **R5** | **NL / designer path (optional but on-mission)** | Sidecar or in-process path from natural language to **validated** actions — milestone table in [`nl-agentic-hooks.md`](nl-agentic-hooks.md) advanced beyond stub **501** where product requires it. |
+
+Detail and phase mapping: [`director-program-roadmap.md`](director-program-roadmap.md).
+
+---
 
 ## Continuous QA
 
-- Local: `cargo test`, `bash scripts/check_player_no_sim_import.sh`, Python steps in `docs/release-v0.1.0.md`.
-- Remote: push to GitHub triggers `ci.yml`; optional `sdk-e2e.yml` for live HTTP tests.
-- Each feature: extend `docs/phase1d-verification.md` (or successor) and retire **UNTESTED** where possible.
-- Agents: see [`AGENTS.md`](../AGENTS.md) and [`docs/agent-master-plan.md`](agent-master-plan.md) for ownership and ordered follow-on work.
+- **Kernel regression:** `cargo test`, golden playthrough, Python SDK steps — see [`CONTRIBUTING.md`](../CONTRIBUTING.md) and `ci.yml`.
+- **Mission regression:** extend tests and CI so **§ On the rails** rows gain **observable proof** (not just docs).
+- **Verification table:** [`phase1d-verification.md`](phase1d-verification.md) for HTTP/sim; add or link a **game-outcome** table when **R0** lands.
+- **Agents:** [`AGENTS.md`](../AGENTS.md), [`agent-master-plan.md`](agent-master-plan.md).
 
 ## Institutional logs
 
 - `docs/aetherforge-director-log.md` — Director cycles.
 - `docs/aetherforge-designer-log.md` — Implementation cycles.
-
-Same bullet headings as in `.cursor/agents/aetherforge-*.agent.md`.
