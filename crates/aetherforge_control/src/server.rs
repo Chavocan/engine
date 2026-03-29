@@ -19,6 +19,8 @@ use futures_util::stream::Stream;
 use aetherforge_schemas::v1::Action;
 use aetherforge_sim::{observation_to_vec, Intent, Simulation, SimulationConfig};
 use serde::Deserialize;
+#[cfg(feature = "sse-obs")]
+use tokio::sync::Semaphore;
 use tokio::sync::Mutex;
 use uuid::Uuid;
 
@@ -31,6 +33,11 @@ const MAX_ACTIONS_PER_BATCH: usize = 32;
 /// Default session lifetime cap (single + batch intents). Override with **`AETHERFORGE_MAX_ACTIONS_PER_SESSION`**.
 const DEFAULT_MAX_ACTIONS_PER_SESSION: u64 = 10_000;
 
+#[cfg(feature = "sse-obs")]
+const DEFAULT_SSE_MAX_PER_SESSION: usize = 1;
+#[cfg(feature = "sse-obs")]
+const DEFAULT_SSE_MAX_GLOBAL: usize = 256;
+
 struct SessionEntry {
     sim: Simulation,
     actions_applied: u64,
@@ -39,6 +46,24 @@ struct SessionEntry {
 #[derive(Clone, Debug)]
 pub struct ControlConfig {
     pub max_actions_per_session: u64,
+    #[cfg(feature = "sse-obs")]
+    /// Concurrent **`GET .../observe/stream`** connections per session (default **1**).
+    pub sse_max_per_session: usize,
+    #[cfg(feature = "sse-obs")]
+    /// Max concurrent SSE streams across all sessions (default **256**). Override with **`AETHERFORGE_SSE_MAX_GLOBAL`**.
+    pub sse_max_global: usize,
+}
+
+impl Default for ControlConfig {
+    fn default() -> Self {
+        Self {
+            max_actions_per_session: DEFAULT_MAX_ACTIONS_PER_SESSION,
+            #[cfg(feature = "sse-obs")]
+            sse_max_per_session: DEFAULT_SSE_MAX_PER_SESSION,
+            #[cfg(feature = "sse-obs")]
+            sse_max_global: DEFAULT_SSE_MAX_GLOBAL,
+        }
+    }
 }
 
 impl ControlConfig {
@@ -48,16 +73,48 @@ impl ControlConfig {
             .and_then(|s| s.parse().ok())
             .filter(|&n| n > 0)
             .unwrap_or(DEFAULT_MAX_ACTIONS_PER_SESSION);
-        Self {
-            max_actions_per_session: n,
+        #[cfg(feature = "sse-obs")]
+        {
+            Self {
+                max_actions_per_session: n,
+                sse_max_per_session: parse_env_usize_positive(
+                    "AETHERFORGE_SSE_MAX_PER_SESSION",
+                    DEFAULT_SSE_MAX_PER_SESSION,
+                ),
+                sse_max_global: parse_env_usize_positive(
+                    "AETHERFORGE_SSE_MAX_GLOBAL",
+                    DEFAULT_SSE_MAX_GLOBAL,
+                ),
+            }
+        }
+        #[cfg(not(feature = "sse-obs"))]
+        {
+            Self {
+                max_actions_per_session: n,
+            }
         }
     }
+}
+
+#[cfg(feature = "sse-obs")]
+fn parse_env_usize_positive(var: &str, default: usize) -> usize {
+    std::env::var(var)
+        .ok()
+        .and_then(|s| s.parse().ok())
+        .filter(|&n| n > 0)
+        .unwrap_or(default)
 }
 
 #[derive(Clone)]
 pub struct AppState {
     sessions: Arc<Mutex<HashMap<String, Arc<Mutex<SessionEntry>>>>>,
     max_actions_per_session: u64,
+    #[cfg(feature = "sse-obs")]
+    sse_per_session: Arc<Mutex<HashMap<String, Arc<Semaphore>>>>,
+    #[cfg(feature = "sse-obs")]
+    sse_global: Arc<Semaphore>,
+    #[cfg(feature = "sse-obs")]
+    sse_max_per_session: usize,
 }
 
 #[derive(Debug, Deserialize, Default)]
@@ -103,6 +160,12 @@ pub fn app_router_with_config(cfg: ControlConfig) -> Router {
     let state = AppState {
         sessions: Arc::new(Mutex::new(HashMap::new())),
         max_actions_per_session: cfg.max_actions_per_session,
+        #[cfg(feature = "sse-obs")]
+        sse_per_session: Arc::new(Mutex::new(HashMap::new())),
+        #[cfg(feature = "sse-obs")]
+        sse_global: Arc::new(Semaphore::new(cfg.sse_max_global)),
+        #[cfg(feature = "sse-obs")]
+        sse_max_per_session: cfg.sse_max_per_session,
     };
     let app = Router::new()
         .route("/v1/sessions", post(create_session))
@@ -115,7 +178,27 @@ pub fn app_router_with_config(cfg: ControlConfig) -> Router {
         "/v1/sessions/:id/observe/stream",
         get(observe_stream),
     );
+    #[cfg(feature = "nl-interpret-stub")]
+    let app = app.route(
+        "/v1/sessions/:id/interpret",
+        post(post_interpret_stub),
+    );
     app.with_state(state)
+}
+
+#[cfg(feature = "nl-interpret-stub")]
+async fn post_interpret_stub(
+    Path(_session_id): Path<String>,
+) -> (StatusCode, Json<serde_json::Value>) {
+    (
+        StatusCode::NOT_IMPLEMENTED,
+        Json(serde_json::json!({
+            "error": {
+                "code": "NL_INTERPRET_NOT_IMPLEMENTED",
+                "message": "In-process NL interpret is not implemented; use the sidecar pattern — docs/nl-agentic-hooks.md"
+            }
+        })),
+    )
 }
 
 async fn create_session(
@@ -338,20 +421,80 @@ async fn get_observation(
 }
 
 #[cfg(feature = "sse-obs")]
+fn err_sse_session_cap() -> (StatusCode, Json<serde_json::Value>) {
+    (
+        StatusCode::TOO_MANY_REQUESTS,
+        Json(serde_json::json!({
+            "error": {
+                "code": "SSE_SESSION_CAP",
+                "message": "concurrent observe/stream limit reached for this session; close an existing stream or raise AETHERFORGE_SSE_MAX_PER_SESSION",
+                "request_id": "n/a"
+            },
+            "schema_version": "1.0.0"
+        })),
+    )
+}
+
+#[cfg(feature = "sse-obs")]
+fn err_sse_global_cap() -> (StatusCode, Json<serde_json::Value>) {
+    (
+        StatusCode::TOO_MANY_REQUESTS,
+        Json(serde_json::json!({
+            "error": {
+                "code": "SSE_GLOBAL_CAP",
+                "message": "server SSE connection limit reached; try again later or raise AETHERFORGE_SSE_MAX_GLOBAL",
+                "request_id": "n/a"
+            },
+            "schema_version": "1.0.0"
+        })),
+    )
+}
+
+#[cfg(feature = "sse-obs")]
 async fn observe_stream(
     State(state): State<AppState>,
     Path(id): Path<String>,
 ) -> Result<
     Sse<Pin<Box<dyn Stream<Item = std::io::Result<Event>> + Send>>>,
-    StatusCode,
+    (StatusCode, Json<serde_json::Value>),
 > {
     let entry_arc = {
         let map = state.sessions.lock().await;
-        map.get(&id).cloned().ok_or(StatusCode::NOT_FOUND)?
+        map.get(&id).cloned().ok_or_else(|| {
+            (
+                StatusCode::NOT_FOUND,
+                Json(serde_json::json!({
+                    "error": {
+                        "code": "SESSION_NOT_FOUND",
+                        "message": "session not found",
+                        "request_id": "n/a"
+                    },
+                    "schema_version": "1.0.0"
+                })),
+            )
+        })?
     };
+
+    let global_permit = state
+        .sse_global
+        .clone()
+        .try_acquire_owned()
+        .map_err(|_| err_sse_global_cap())?;
+
+    let sem = {
+        let mut m = state.sse_per_session.lock().await;
+        m.entry(id.clone())
+            .or_insert_with(|| Arc::new(Semaphore::new(state.sse_max_per_session)))
+            .clone()
+    };
+    let session_permit = sem
+        .try_acquire_owned()
+        .map_err(|_| err_sse_session_cap())?;
 
     const POLL_MS: u64 = 25;
     let stream = async_stream::stream! {
+        let _hold_global = global_permit;
+        let _hold_session = session_permit;
         let mut last_sent_tick: Option<u64> = None;
         loop {
             let (tick, payload) = {
@@ -361,10 +504,7 @@ async fn observe_stream(
                 let bytes = match observation_to_vec(&obs) {
                     Ok(b) => b,
                     Err(e) => {
-                        yield Err(std::io::Error::new(
-                            std::io::ErrorKind::Other,
-                            e.to_string(),
-                        ));
+                        yield Err(std::io::Error::other(e.to_string()));
                         break;
                     }
                 };

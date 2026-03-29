@@ -13,6 +13,9 @@
 | `GET` observation body bytes == `wire` replay of same seed + intent | same | `http_get_observation_bytes_match_wire_replay` |
 | Batch of 3 actions vs 3 single posts: same final `tick` / `message` / `rng_draw` (same seed, different `session_id`) | same | `batch_three_noops_matches_three_single_posts_tick` |
 | Batch with **>32** actions → **413** + `BATCH_TOO_LARGE` | same | `batch_too_many_actions_returns_413` |
+| Parallel same-session actions (24 concurrent `till_soil`) → final `tick` matches count | `crates/aetherforge_control/tests/http_concurrent.rs` | `concurrent_actions_on_same_session_final_tick_matches_total` |
+| Higher fan-out (48 concurrent) → final `tick` matches count | same | `concurrent_actions_high_fanout_48_final_tick_matches` |
+| NL-2 stub route returns **501** + stable error code (**`nl-interpret-stub`**) | `crates/aetherforge_control/tests/nl_interpret_stub.rs` | `interpret_stub_returns_501_with_error_body` — `cargo test -p aetherforge_control --features nl-interpret-stub --test nl_interpret_stub` |
 | Empty `actions` array → **400** + `INVALID_BATCH` | same | `batch_empty_actions_returns_400` |
 | Offline scenario runner JSON → `run_offline` happy path + tick assertion failure | `crates/aetherforge_cli/tests/scenario_offline.rs` | `offline_scenario_from_json_happy_path`, `offline_scenario_wrong_expect_tick_fails` |
 | Farm stub: `farm_plant` adds one plot (feature **`farm-stub`**) | `crates/aetherforge_sim/src/lib.rs` (`farm_stub_tests`) | `farm_plant_adds_plot_to_observation` — run `cargo test -p aetherforge_sim --features farm-stub` |
@@ -23,6 +26,9 @@
 | Session action quota: third single action → **429** | `crates/aetherforge_control/tests/http_action_quota.rs` | `single_actions_hit_quota_then_429` |
 | Batch over quota: **no** partial apply, tick unchanged | same | `batch_rejected_when_would_exceed_quota_without_partial_apply` |
 | SSE observation stream: event on tick change (`sse-obs`) | `crates/aetherforge_control/tests/sse_observe_stream.rs` | `observe_stream_emits_when_tick_changes` — `cargo test -p aetherforge_control --features sse-obs` |
+| SSE second connection over cap → **429** `SSE_SESSION_CAP` | same | `second_observe_stream_returns_429_when_cap_is_one` |
+| Per-IP HTTP rate limit (**`rate-limit`**) → **429** `HTTP_RATE_LIMIT` | `crates/aetherforge_control/tests/http_rate_limit.rs` | `rate_limit_returns_429_when_exceeded` — `cargo test -p aetherforge_control --features rate-limit --test http_rate_limit` |
+| JSON Schema drift (**action** + **observation** `farm` fragment) | `scripts/check_schema_drift.py` | Run in CI; see **`crates/aetherforge_schemas/schema_fragments/`** |
 | Python SDK SSE iterator (mock body) | `python/aetherforge_sdk/tests/test_client_mock.py` | `test_observe_stream_mock_sse_body` |
 | `wire` bytes parse to same `serde_json::Value` as direct `Observation` serde | `crates/aetherforge_sim/src/wire.rs` | `wire_bytes_match_direct_serde_value` |
 | Play-log JSON line has required keys (`ts`, `run_id`, `tick`, `event`, `session_id`, `payload`) | `crates/aetherforge_control/tests/play_log_json.rs` | `play_emit_produces_parseable_json_with_contract_keys` |
@@ -35,12 +41,12 @@
 
 | Item | Notes |
 |------|--------|
-| WebSocket / SSE streaming | Deferred per Director 1d (not implemented). |
-| TLS, auth, non-localhost bind | v0 spec; no tests. |
-| JSON Schema CI validation vs Rust types | `schemars` generation not wired. |
-| Concurrent HTTP stress (parallel mutating requests) | Single sequential mutator per session tested; parallel mutation stress not yet covered. |
-| `tracing` JSON subscriber / play-log narrative | Not in 1d scope. |
-| Headed vs headless parity | Platform crate still stub. |
+| WebSocket transport | SSE implemented (`sse-obs`); WebSocket still not in scope. |
+| TLS, auth, non-localhost bind | **ADR** [`docs/adr/0003-deployment-tls-and-auth.md`](adr/0003-deployment-tls-and-auth.md): TLS/auth at proxy; **`AETHERFORGE_HTTP_ADDR`** for bind — no in-process TLS/auth tests in v0.x. |
+| Full **observation.schema.json** auto-generation vs Rust | **Action** + **farm** + **`world`** property slices covered by `scripts/check_schema_drift.py` vs fragments; remainder of envelope still hand-maintained. |
+| Concurrent HTTP stress | **24** + **48** parallel actions on one session in **`http_concurrent`**; not a soak/load test or TLS path. |
+| `tracing` JSON subscriber / play-log narrative | Play-log JSON lines tested; full narrative tooling not in 1d scope. |
+| Headed vs headless parity | **wgpu** compile smoke only (`headed-smoke`); full window loop still stub (`platform_placeholder`); see **`docs/platform-headed-roadmap.md`**. |
 
 ## Serve binary
 

@@ -11,6 +11,7 @@ use tokio::net::TcpListener;
 fn app() -> Router {
     aetherforge_control::app_router_with_config(aetherforge_control::ControlConfig {
         max_actions_per_session: 10_000,
+        ..Default::default()
     })
 }
 
@@ -108,4 +109,50 @@ async fn observe_stream_emits_when_tick_changes() {
 
     let v1 = next_json_event(&mut byte_stream).await;
     assert_eq!(v1["tick"], 1);
+}
+
+#[tokio::test]
+async fn second_observe_stream_returns_429_when_cap_is_one() {
+    let app = aetherforge_control::app_router_with_config(aetherforge_control::ControlConfig {
+        max_actions_per_session: 10_000,
+        sse_max_per_session: 1,
+        sse_max_global: 8,
+    });
+    let listener = TcpListener::bind("127.0.0.1:0").await.unwrap();
+    let addr = listener.local_addr().unwrap();
+    tokio::spawn(async move {
+        axum::serve(listener, app).await.unwrap();
+    });
+    tokio::time::sleep(Duration::from_millis(40)).await;
+    let base = format!("http://{}", addr);
+    let client = reqwest::Client::new();
+
+    let res = client
+        .post(format!("{base}/v1/sessions"))
+        .json(&json!({}))
+        .send()
+        .await
+        .unwrap();
+    let sid = res.json::<Value>().await.unwrap()["session_id"]
+        .as_str()
+        .unwrap()
+        .to_string();
+
+    let r1 = client
+        .get(format!("{base}/v1/sessions/{sid}/observe/stream"))
+        .header("accept", "text/event-stream")
+        .send()
+        .await
+        .unwrap();
+    assert_eq!(r1.status(), reqwest::StatusCode::OK);
+
+    let r2 = client
+        .get(format!("{base}/v1/sessions/{sid}/observe/stream"))
+        .header("accept", "text/event-stream")
+        .send()
+        .await
+        .unwrap();
+    assert_eq!(r2.status(), reqwest::StatusCode::TOO_MANY_REQUESTS);
+    let body = r2.json::<Value>().await.unwrap();
+    assert_eq!(body["error"]["code"], "SSE_SESSION_CAP");
 }

@@ -1,13 +1,21 @@
 {
-  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$schema": "http://json-schema.org/draft-07/schema#",
   "$id": "https://aetherforge.local/schemas/v1/action.schema.json",
   "title": "Action",
   "type": "object",
-  "required": ["schema_version", "kind"],
+  "required": ["kind", "schema_version"],
   "properties": {
-    "schema_version": { "type": "string" },
-    "kind": { "type": "string" },
-    "payload": { "type": "object", "additionalProperties": true }
+    "kind": {
+      "type": "string"
+    },
+    "payload": {
+      "default": null,
+      "type": "object",
+      "additionalProperties": true
+    },
+    "schema_version": {
+      "type": "string"
+    }
   },
   "additionalProperties": false
 }

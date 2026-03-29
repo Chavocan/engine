@@ -1,0 +1,35 @@
+{
+  "type": "object",
+  "description": "Optional farm slice when server is built with Rust feature `farm-stub`. Omitted in default builds.",
+  "required": ["day", "time_minutes", "plots", "inventory"],
+  "properties": {
+    "day": { "type": "integer", "minimum": 1 },
+    "time_minutes": { "type": "integer", "minimum": 0 },
+    "plots": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["coord", "crop", "growth_stage"],
+        "properties": {
+          "coord": {
+            "type": "object",
+            "required": ["x", "y"],
+            "properties": {
+              "x": { "type": "integer" },
+              "y": { "type": "integer" }
+            },
+            "additionalProperties": false
+          },
+          "crop": { "type": "string" },
+          "growth_stage": { "type": "integer", "minimum": 0 }
+        },
+        "additionalProperties": false
+      }
+    },
+    "inventory": {
+      "type": "object",
+      "additionalProperties": { "type": "integer", "minimum": 0 }
+    }
+  },
+  "additionalProperties": false
+}

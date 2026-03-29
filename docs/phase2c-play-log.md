@@ -9,6 +9,10 @@ Set **`AETHERFORGE_PLAY_LOG=1`** before running:
 
 When unset, the process uses normal human-readable `tracing` formatting (no JSON play lines).
 
+### Split play JSON to stdout
+
+Set **`AETHERFORGE_PLAY_LOG_STDOUT=1`** together with **`AETHERFORGE_PLAY_LOG=1`** to emit **`aetherforge.play`** JSON lines on **stdout**, while human-readable `tracing` (non-play targets) stays on **stderr**. Useful for pipelines that want `2>human.log` or a clean JSON-only stream.
+
 ## Line contract (flattened JSON)
 
 Each play event includes at minimum:
@@ -32,5 +36,5 @@ Each play event includes at minimum:
 
 ## UNTESTED
 
-- Log rotation / file append via env (not implemented — stdout only in 2c).
+- Log rotation / file append via env (not implemented — stdout/stderr only in 2c).
 - WebSocket subscribe (explicitly out of scope for 2c).

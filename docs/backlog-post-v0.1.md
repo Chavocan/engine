@@ -4,13 +4,13 @@ Prioritized ideas for stakeholder triage. **Pick one of WebSocket vs SSE** where
 
 | Pri | Item | One-liner + acceptance sketch |
 |-----|------|--------------------------------|
-| P1 | **Observation stream (SSE)** | **ADR 0001** + **Phase 9b** (`sse-obs`, `GET .../observe/stream`); **acceptance:** met by `observe_stream_emits_when_tick_changes` (feature-gated CI step). |
+| P1 | **Observation stream (SSE)** | **Shipped (ADR 0001 + Phase 9b):** `sse-obs`, `GET .../observe/stream`; CI runs `observe_stream_emits_when_tick_changes`. |
 | P1 | **`aetherforge_player` crate split** | **Done (ADR 0002):** crate `crates/aetherforge_player`; optional verify `cargo tree -p aetherforge_player -e normal` has no `aetherforge_sim`. |
-| P2 | **Per-IP rate limit** | Token bucket (or proxy-only doc) for abusive HTTP clients; **acceptance:** optional `rate-limit` feature + one test with synthetic burst → **429** or documented defer to reverse proxy. |
-| P2 | **SSE connection caps** (see **ADR 0001**) | Limit concurrent `observe/stream` per **session** (e.g. single tail per `session_id`) and/or **global** fan-out; **acceptance:** configurable max + **429** or disconnect with stable error when exceeded. |
-| P2 | **Play-log stderr split for headless** | Optional sink so headless tools can tail JSON lines without mixing sim `tracing`; **acceptance:** env flag + one test capturing distinct stream. |
-| P3 | **schemars + schema CI** | Generate JSON Schema from Rust types and diff in CI; **acceptance:** workflow step fails on drift vs `schemas/v1/`. |
-| P3 | **Headed `winit` / `wgpu` smoke** | Minimal window + clear color behind feature flag; **acceptance:** `cargo run` with feature opens and exits cleanly in CI (or marked skip with reason). |
+| P2 | **Per-IP rate limit** | **Done:** optional **`rate-limit`** feature + **`AETHERFORGE_HTTP_RATE_LIMIT_RPS`** (**429** `HTTP_RATE_LIMIT`); **`docs/deployment-rate-limiting.md`** documents reverse-proxy-first production layout. |
+| P2 | **SSE connection caps** (see **ADR 0001**) | **Done:** per-session + global semaphores; **429** `SSE_SESSION_CAP` / `SSE_GLOBAL_CAP`; test `second_observe_stream_returns_429_when_cap_is_one`. |
+| P2 | **Play-log stderr split for headless** | **Done:** `AETHERFORGE_PLAY_LOG_STDOUT=1` routes play JSON to stdout (human tracing on stderr). |
+| P3 | **schemars + schema CI** | **Done:** `schema-export` + `scripts/check_schema_drift.py` (action export + observation farm fragment vs `schema_fragments/observation_farm_property.json`). |
+| P3 | **Headed `winit` / `wgpu` smoke** | **Done (compile):** `headed-smoke` + `aetherforge_wgpu_smoke` headless instance; CI `cargo build -p aetherforge_platform --features headed-smoke`. |
 
 ---
 

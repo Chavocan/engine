@@ -14,21 +14,22 @@ Living summary aligned with the Cursor **AetherForge Director** plan. Update whe
 
 | Priority | Item | Done when |
 |----------|------|-----------|
-| P0 | **v0.1.0 tag** | Checklist in `docs/release-v0.1.0.md` green; `CHANGELOG` `[0.1.0]` dated. |
+| P0 | **v0.1.0 tag** | **Done:** `CHANGELOG.md` **\[0.1.0\]** dated **2026-03-29**; checklist in `docs/release-v0.1.0.md`; tag **`v0.1.0`** (create locally, push when publishing). |
 | P0 | **Farm gameplay loop** | **Done (stub):** `farm_harvest` + `farm_demo_loop_plant_grow_harvest` + `examples/farm_demo_loop.json`. |
-| P0 | **Demo showcase doc** | `docs/demo-showcase.md` — run offline scenario per doc; verify on your machine (`cargo`). |
-| P1 | **CI golden playthrough** | Workflow (or script) runs scenario or `aetherforge_player` against `serve` (or offline-only first) and fails on error. |
+| P0 | **Demo showcase doc** | **Done:** `docs/demo-showcase.md` recording checklist verified; offline scenario commands exercised. |
+| P1 | **CI golden playthrough** | **Done:** `scripts/golden_playthrough.sh` + CI step (offline farm + `http_sessions` + `player_http_loop`). |
 | P1 | **Player crate split** | **Done:** `crates/aetherforge_player` (ADR 0002). Verify runtime graph: `cargo tree -p aetherforge_player -e normal` (no `aetherforge_sim`). |
-| P2 | **Schema CI** | Generated or checked schemas match `schemas/v1/` in CI. |
-| P2 | **SSE caps + play-log stderr** | Per `docs/backlog-post-v0.1.md`. |
-| P3 | **Headed wgpu smoke** | Feature-gated window or documented CI skip. |
-| P3 | **Product polish** | **Partial:** `LICENSE-MIT`, `LICENSE-APACHE`, `SECURITY.md`, `docs/nl-agentic-hooks.md`; README License/Security sections. |
+| P2 | **Schema CI** | **Done:** `python scripts/check_schema_drift.py` + `aetherforge_export_action_schema` (`schema-export`) + farm fragment sync for `observation.schema.json`. |
+| P2 | **SSE caps + play-log stderr** | **Done:** SSE caps + env (`AETHERFORGE_SSE_*`); play log **`AETHERFORGE_PLAY_LOG_STDOUT=1`** (see `docs/phase2c-play-log.md`). |
+| P3 | **Headed wgpu smoke** | **Done:** `cargo build -p aetherforge_platform --features headed-smoke` in CI; binary `aetherforge_wgpu_smoke`. |
+| P3 | **Product polish** | **Done:** `LICENSE-MIT`, `LICENSE-APACHE`, `SECURITY.md`, `docs/nl-agentic-hooks.md`; README License/Security sections. |
 
 ## Continuous QA
 
 - Local: `cargo test`, `bash scripts/check_player_no_sim_import.sh`, Python steps in `docs/release-v0.1.0.md`.
 - Remote: push to GitHub triggers `ci.yml`; optional `sdk-e2e.yml` for live HTTP tests.
 - Each feature: extend `docs/phase1d-verification.md` (or successor) and retire **UNTESTED** where possible.
+- Agents: see [`AGENTS.md`](../AGENTS.md) and [`docs/agent-master-plan.md`](agent-master-plan.md) for ownership and ordered follow-on work.
 
 ## Institutional logs
 

@@ -1,0 +1,12 @@
+---
+description: Agent owns implementation and QA; user sets goals and constraints
+alwaysApply: true
+---
+
+# AetherForge — agent ownership
+
+- **You (the agent)** own implementation, refactors within scope, running tests and CI-parity commands, and proposing concrete changes. Do not delegate verification to the user as a substitute for `cargo test`, scripts, or documented CI steps.
+- **The user** sets direction, scope, and “good enough.” When requirements are implicit, infer from `docs/roadmap-to-complete-project.md`, `CONTRIBUTING.md`, and `.github/workflows/ci.yml`.
+- **Canonical QA:** Green **CI** (`ci.yml`) is the regression gate. Mirror it locally when editing (`CONTRIBUTING.md` § Canonical QA). `docs/demo-showcase.md` is for demos, not an extra test matrix.
+- **Docs:** Update `docs/phase1d-verification.md` (or the relevant phase doc) when adding endpoints or observable behavior worth tracking.
+- **Scope:** `aetherforge-lead-director.agent.md` describes a broader program; engine-repo work stays aligned with crate boundaries and existing ADRs unless the user expands scope.

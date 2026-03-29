@@ -1,7 +1,9 @@
-//! JSON Schema ↔ Rust types (stubs — expand with `schemars` in a later slice).
+//! JSON Schema ↔ Rust types; **`schema-export`** feature generates JSON Schema for drift checks in CI.
 
 pub mod v1 {
     use serde::{Deserialize, Serialize};
+    #[cfg(feature = "schema-export")]
+    use schemars::{schema::Schema, JsonSchema};
 
     #[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq)]
     pub struct WorldSnapshot {
@@ -20,11 +22,26 @@ pub mod v1 {
     }
 
     #[derive(Debug, Clone, Serialize, Deserialize)]
+    #[serde(deny_unknown_fields)]
+    #[cfg_attr(feature = "schema-export", derive(JsonSchema))]
     pub struct Action {
         pub schema_version: String,
         pub kind: String,
         #[serde(default)]
+        #[cfg_attr(
+            feature = "schema-export",
+            schemars(schema_with = "payload_object_schema")
+        )]
         pub payload: serde_json::Value,
+    }
+
+    #[cfg(feature = "schema-export")]
+    fn payload_object_schema(_gen: &mut schemars::gen::SchemaGenerator) -> Schema {
+        serde_json::from_value(serde_json::json!({
+            "type": "object",
+            "additionalProperties": true
+        }))
+        .expect("inline schema")
     }
 
     #[derive(Debug, Clone, Serialize, Deserialize)]

@@ -1,5 +1,10 @@
 # Phase 7a — Server hardening (session action cap)
 
+## Listen address (`aetherforge_serve`)
+
+- **Env:** **`AETHERFORGE_HTTP_ADDR`** — default **`127.0.0.1:8787`**. Parseable `host:port` (e.g. `0.0.0.0:8787` for all interfaces in containers).
+- **Production:** Prefer **TLS and auth at a reverse proxy**; see **`docs/deployment.md`** and **ADR [`docs/adr/0003-deployment-tls-and-auth.md`](adr/0003-deployment-tls-and-auth.md)**.
+
 ## Per-session action quota
 
 - **Env:** `AETHERFORGE_MAX_ACTIONS_PER_SESSION` — positive integer; default **`10000`**.
@@ -14,7 +19,9 @@
 
 ## Per-IP rate limiting
 
-**UNTESTED / not implemented:** Optional token-bucket per client IP behind a **`rate-limit`** feature was deferred; revisit if abusive traffic appears before a reverse proxy is added.
+**Implemented (optional):** Build with **`rate-limit`** and set **`AETHERFORGE_HTTP_RATE_LIMIT_RPS`** for in-process per-IP limits (**429** `HTTP_RATE_LIMIT`). **Recommended production** approach: rate-limit at a **reverse proxy or edge** — see **`docs/deployment-rate-limiting.md`**.
+
+- Tests: `cargo test -p aetherforge_control --features rate-limit --test http_rate_limit`
 
 ## Related
 

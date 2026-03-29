@@ -1,0 +1,12 @@
+{
+  "type": "object",
+  "required": ["world_version", "entities"],
+  "properties": {
+    "world_version": { "type": "string" },
+    "entities": {
+      "type": "array",
+      "items": {}
+    }
+  },
+  "additionalProperties": true
+}

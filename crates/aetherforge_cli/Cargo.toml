@@ -9,6 +9,8 @@ repository.workspace = true
 default = []
 farm-stub = ["aetherforge_control/farm-stub"]
 sse-obs = ["aetherforge_control/sse-obs"]
+rate-limit = ["aetherforge_control/rate-limit"]
+nl-interpret-stub = ["aetherforge_control/nl-interpret-stub"]
 
 [lib]
 path = "src/lib.rs"

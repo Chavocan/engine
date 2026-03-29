@@ -5,6 +5,8 @@
 mod server;
 
 pub mod play_log;
+#[cfg(feature = "rate-limit")]
+pub mod rate_limit;
 
 pub use server::{app_router, app_router_with_config, AppState, ControlConfig};
 

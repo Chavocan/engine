@@ -23,6 +23,8 @@ Allow **external** agents (LLMs, orchestrators) to drive the same simulation **w
 
 | Phase | Deliverable |
 |-------|-------------|
-| NL-0 | This document + example prompt template in `docs/` or `examples/nl-prompt-template.md` |
-| NL-1 | Python sample: OpenAI/Anthropic tool-use → `AetherForgeClient.apply_action` |
-| NL-2 | Optional in-process `interpret` route behind feature flag + auth |
+| NL-0 | This document + **[examples/nl-prompt-template.md](../examples/nl-prompt-template.md)** |
+| NL-1 | **[examples/nl_tool_use_sdk_sample.py](../examples/nl_tool_use_sdk_sample.py)** — validated `Action` → `AetherForgeClient.apply_action` (swap in real tool-use output from your model provider). |
+| NL-2 | Optional **`nl-interpret-stub`** feature: **`POST /v1/sessions/{id}/interpret`** returns **501** + stable JSON (`NL_INTERPRET_NOT_IMPLEMENTED`) until a real interpreter ships; sidecar path remains preferred. |
+
+See also **[docs/platform-headed-roadmap.md](platform-headed-roadmap.md)** for the headed runtime track (separate from NL).

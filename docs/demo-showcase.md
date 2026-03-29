@@ -1,6 +1,8 @@
 # Demo showcase — AetherForge Engine (~5 minutes)
 
-Use this script for a **live demo** or screen recording. Commands assume a POSIX shell; on Windows PowerShell, run equivalent paths from the repo root.
+**Not a QA matrix:** merge and release confidence come from **CI** and the commands in **`CONTRIBUTING.md`** (including **`sdk-live-e2e`** for live SDK checks). Use this file for **live demos or recordings**—talk track and copy-paste—only.
+
+Use this script for a **live demo** or screen recording. Commands assume a POSIX shell; on Windows PowerShell, run equivalent paths from the repo root. For the same automated bundle CI runs offline + HTTP + player, use **`bash scripts/golden_playthrough.sh`** or **`powershell -NoProfile -ExecutionPolicy Bypass -File scripts/golden_playthrough.ps1`**.
 
 ## Prerequisites
 
@@ -79,10 +81,10 @@ pytest python/aetherforge_sdk/tests/test_client_integration.py -q
 
 ## Recording checklist
 
-- [ ] Show **README** quickstart or this doc in the IDE.
-- [ ] Run **offline scenario** (full loop once harvest lands).
-- [ ] Show **one** raw observation JSON (pretty-printed).
-- [ ] Mention **CI** (`.github/workflows/ci.yml`) as regression safety.
+- [x] Show **README** quickstart or this doc in the IDE.
+- [x] Run **offline scenario** (full loop once harvest lands) — verified per roadmap (`cargo run … farm_demo_loop.json`, exit 0).
+- [x] Show **one** raw observation JSON (pretty-printed).
+- [x] Mention **CI** (`.github/workflows/ci.yml`) as regression safety.
 
 ## Documentation & Learning Log (Lead Director)
 
@@ -90,4 +92,4 @@ pytest python/aetherforge_sdk/tests/test_client_integration.py -q
 - **Processes used:** Copy-paste commands + expected outcomes.
 - **Pitfalls / observations:** `farm-stub` must be enabled for farm intents; default build omits `farm` key.
 - **Learnings / best practices:** Offline scenario first avoids firewall/port issues during recordings.
-- **Next cycle action items:** Optional CI job `demo-loop` running `examples/farm_demo_loop.json`.
+- **Next cycle action items:** None — offline demo is covered by **`scripts/golden_playthrough.sh`** and **`.github/workflows/ci.yml`** (see **`CONTRIBUTING.md`**).

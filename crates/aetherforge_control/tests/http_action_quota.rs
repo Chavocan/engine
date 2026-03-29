@@ -10,6 +10,7 @@ use tower::ServiceExt;
 fn app_quota(limit: u64) -> Router {
     aetherforge_control::app_router_with_config(aetherforge_control::ControlConfig {
         max_actions_per_session: limit,
+        ..Default::default()
     })
 }
 

@@ -5,5 +5,15 @@ edition.workspace = true
 license.workspace = true
 repository.workspace = true
 
+[features]
+default = []
+headed-smoke = ["dep:wgpu"]
+
+[[bin]]
+name = "aetherforge_wgpu_smoke"
+path = "src/bin/wgpu_smoke.rs"
+required-features = ["headed-smoke"]
+
 [dependencies]
 aetherforge_sim = { path = "../aetherforge_sim" }
+wgpu = { version = "23", optional = true, default-features = true }

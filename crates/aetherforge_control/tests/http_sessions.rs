@@ -14,6 +14,7 @@ use tower::ServiceExt;
 fn app() -> Router {
     aetherforge_control::app_router_with_config(aetherforge_control::ControlConfig {
         max_actions_per_session: 10_000,
+        ..Default::default()
     })
 }
 

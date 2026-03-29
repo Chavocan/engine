@@ -13,10 +13,26 @@ jobs:
       - uses: dtolnay/rust-toolchain@stable
       - name: cargo test
         run: cargo test --verbose
+      - name: Golden playthrough (offline farm + HTTP sessions + player)
+        run: bash scripts/golden_playthrough.sh
       - name: SSE observe stream (feature sse-obs)
         run: cargo test -p aetherforge_control --features sse-obs observe_stream --verbose
+      - name: Schema drift (action export + observation farm + world fragments)
+        run: python scripts/check_schema_drift.py
+      - name: NL interpret stub route (feature nl-interpret-stub)
+        run: cargo test -p aetherforge_control --features nl-interpret-stub --test nl_interpret_stub --verbose
+      - name: HTTP per-IP rate limit (feature rate-limit)
+        run: cargo test -p aetherforge_control --features rate-limit --test http_rate_limit --verbose
+      - name: Headed wgpu smoke (compile only)
+        run: cargo build -p aetherforge_platform --features headed-smoke --verbose
       - name: Player HTTP-only source boundary
         run: bash scripts/check_player_no_sim_import.sh
+      - name: Player crate — no aetherforge_sim on runtime edges
+        run: |
+          if cargo tree -p aetherforge_player -e normal | grep -q 'aetherforge_sim'; then
+            echo 'aetherforge_sim must not appear on normal (non-dev) dependency edges of aetherforge_player' >&2
+            exit 1
+          fi
       - name: Demo loop (offline farm scenario, farm-stub)
         run: cargo run -p aetherforge_cli --features farm-stub --bin aetherforge_scenario -- --offline examples/farm_demo_loop.json
 
@@ -35,3 +51,36 @@ jobs:
         run: python python/aetherforge_sdk/scripts/check_observation_contract.py
       - name: Pytest (mock; no live server)
         run: pytest python/aetherforge_sdk/tests -q
+
+  sdk-live-e2e:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install SDK (dev)
+        run: pip install -e "./python/aetherforge_sdk[dev]"
+      - name: Build aetherforge_serve
+        run: cargo build -p aetherforge_cli --bin aetherforge_serve --verbose
+      - name: SDK live E2E (localhost)
+        env:
+          AETHERFORGE_TEST_URL: http://127.0.0.1:8787
+        run: |
+          set -euo pipefail
+          ./target/debug/aetherforge_serve &
+          SERVER_PID=$!
+          trap 'kill $SERVER_PID 2>/dev/null || true' EXIT
+          code=""
+          for i in $(seq 1 60); do
+            code=$(curl -s -o /dev/null -w "%{http_code}" -X POST http://127.0.0.1:8787/v1/sessions \
+              -H "Content-Type: application/json" -d '{}')
+            if [ "$code" = "201" ]; then break; fi
+            sleep 1
+          done
+          if [ "$code" != "201" ]; then
+            echo "server did not become ready (last HTTP code: ${code:-empty})" >&2
+            exit 1
+          fi
+          pytest python/aetherforge_sdk/tests/test_client_integration.py -v

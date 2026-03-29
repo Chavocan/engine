@@ -4,6 +4,22 @@ Append-only implementation notes. Mirror bullet labels from `aetherforge-designe
 
 ---
 
+## 2026-03-29 (finish lines 1–4 — scoped plan implementation)
+
+- **Accomplished this cycle:** **`AETHERFORGE_HTTP_ADDR`**; **ADR 0003** (TLS/auth at proxy); **`docs/deployment.md`**, **`release-closure-checklist.md`**, **`director-program-roadmap.md`**; **`agent-master-plan.md`** finish-line table; schema drift **`world`** fragment; **`nl-interpret-stub`** + CI; **`http_concurrent`** 48-fan-out test; pushed **`main`** and **`v0.1.0`** to **`origin`**.
+- **Processes used:** `cargo test --workspace`, `cargo clippy --all-features`, `python scripts/check_schema_drift.py`.
+- **Pitfalls / observations:** NL-2 remains sidecar-first; in-process route is **501** placeholder only.
+- **Learnings / best practices:** Finish lines are **documentation + incremental code**, not a single “done” bit for the Director program (see **`director-program-roadmap.md`**).
+- **Next cycle action items:** Optional in-process TLS/auth only if product mandates; headed **P1** window when platform staffing returns.
+
+## 2026-03-29 (v0.1.0 completion pass)
+
+- **Accomplished this cycle:** Closed roadmap items: **CHANGELOG** **\[0.1.0\]**, git tag **`v0.1.0`**, **`scripts/golden_playthrough.sh`** + CI, **`scripts/check_action_schema_drift.py`** + schemars **`schema-export`**, SSE caps (**`SSE_SESSION_CAP`** / **`SSE_GLOBAL_CAP`**), **`AETHERFORGE_PLAY_LOG_STDOUT`**, **`headed-smoke`** / **`aetherforge_wgpu_smoke`**, docs (**`roadmap-to-complete-project.md`**, **`release-v0.1.0.md`**, **`demo-showcase.md`**, **`backlog-post-v0.1.md`**, **`phase1d`**, **`phase2c`**, **`CONTRIBUTING.md`**).
+- **Processes used:** `cargo test`, `cargo clippy -- -D warnings`, pytest, relay **`chat_a`** handoffs.
+- **Pitfalls / observations:** **`Action`** now uses **`deny_unknown_fields`** — matches **`action.schema.json`** `additionalProperties: false`.
+- **Learnings / best practices:** Golden script duplicates subset of **`cargo test`** but documents the “demo bundle” explicitly for stakeholders.
+- **Next cycle action items:** Per-IP **`rate-limit`** feature (still deferred); extend schema drift beyond **Action** if more types gain **`JsonSchema`**.
+
 ## 2026-03-29
 
 - **Accomplished this cycle:** (Planned) Execution pass to follow Director roadmap — institutional logs created; repo roadmap file added; verification runs delegated to same session.
@@ -51,3 +67,11 @@ Append-only implementation notes. Mirror bullet labels from `aetherforge-designe
 - **Pitfalls / observations:** Director checklist phrase “expect no sim” should mean **non-dev** dependency graph for the player **library/binary** artifact.
 - **Learnings / best practices:** Dev-only control dep pulls sim transitively for `cargo test` builds; still no sim in **player `src/`**.
 - **Next cycle action items:** Stakeholder **push + green Actions**; optional CI step `cargo tree -p aetherforge_player -e normal |` … guard; **`v0.1.0`** per release doc.
+
+## 2026-03-29 (B — CI `cargo tree` guard for player)
+
+- **Accomplished this cycle:** Added **`.github/workflows/ci.yml`** step: fail if **`cargo tree -p aetherforge_player -e normal`** output contains **`aetherforge_sim`**; updated **`CONTRIBUTING.md`** CI table + **`CHANGELOG.md`**. Local PowerShell check — pass.
+- **Processes used:** Encodes B’s verify nuance as regression (runtime edges only).
+- **Pitfalls / observations:** `grep` substring is sufficient; crate name is unique in workspace.
+- **Learnings / best practices:** CI mirrors documented intent without banning dev-dep sim for tests.
+- **Next cycle action items:** Watch Actions on merge.

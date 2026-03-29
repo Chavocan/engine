@@ -25,10 +25,10 @@ python python/aetherforge_sdk/scripts/check_observation_contract.py
 pytest python/aetherforge_sdk/tests -q
 ```
 
-**SDK smoke (optional, live server):** with `aetherforge_serve` on `127.0.0.1:8787`:
+**SDK smoke (live server):** CI job **`sdk-live-e2e`** runs this against `aetherforge_serve` on every PR. For local parity after editing the client:
 
 ```bash
-set AETHERFORGE_TEST_URL=http://127.0.0.1:8787
+export AETHERFORGE_TEST_URL=http://127.0.0.1:8787
 pytest python/aetherforge_sdk/tests/test_client_integration.py -q
 ```
 
@@ -52,11 +52,11 @@ pytest python/aetherforge_sdk/tests/test_client_integration.py -q
 
 ## Stakeholder sign-off
 
-- [ ] `cargo test` green on `main`
-- [ ] Python ruff + contract script + mock pytest green
-- [ ] `scripts/check_player_no_sim_import.sh` green in CI
-- [ ] `CHANGELOG.md` **Unreleased** folded into **v0.1.0** section at tag time
-- [ ] Tag **`v0.1.0`** pushed (if using git tags)
+- [x] `cargo test` green on `main`
+- [x] Python ruff + contract script + mock pytest green
+- [x] `scripts/check_player_no_sim_import.sh` green in CI
+- [x] `CHANGELOG.md` **v0.1.0** section dated **2026-03-29**
+- [x] Tag **`v0.1.0`** created locally (push tags when publishing)
 
 ---
 

@@ -9,6 +9,8 @@ repository.workspace = true
 default = []
 farm-stub = ["aetherforge_sim/farm-stub"]
 sse-obs = ["dep:async-stream", "dep:futures-util"]
+rate-limit = ["dep:governor"]
+nl-interpret-stub = []
 
 [dependencies]
 async-stream = { version = "0.3", optional = true }
@@ -24,6 +26,7 @@ tracing-subscriber = { version = "0.3.19", features = ["env-filter", "json"] }
 chrono = { version = "0.4", default-features = false, features = ["clock", "serde", "std"] }
 uuid = { version = "1.11", features = ["v4", "serde"] }
 rand = "0.8"
+governor = { version = "0.7", optional = true }
 
 [dev-dependencies]
 tracing = "0.1"
@@ -33,3 +36,7 @@ tower = { version = "0.5", features = ["util"] }
 bytes = "1.11"
 reqwest = { version = "0.12", default-features = false, features = ["json", "rustls-tls", "stream"] }
 futures-util = { version = "0.3", default-features = false, features = ["std"] }
+
+[[test]]
+name = "nl_interpret_stub"
+required-features = ["nl-interpret-stub"]

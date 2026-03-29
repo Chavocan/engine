@@ -23,6 +23,8 @@ cargo run -p aetherforge_cli --features farm-stub --bin aetherforge_scenario -- 
 
 Same pair is what **Rust CI** exercises (see **`CONTRIBUTING.md`**).
 
+**QA:** Automated tests and **green CI** are the source of truth for correctness—see **Canonical QA** in **`CONTRIBUTING.md`**. The demo script in **`docs/demo-showcase.md`** is for presentations, not an additional gate.
+
 ## Commands
 
 ```bash
@@ -40,7 +42,7 @@ The headless binary applies a stub intent, advances **one** tick, and prints **o
 
 **Scenario runner (Phase 4b):** `aetherforge_scenario` runs a JSON script of `batch` / `single` steps; use **`--offline`** for in-process soak (no server). Add **`--emit-tick-json`** to print one `{"event":"tick","tick":…}` object per step to **stderr**; **`--quiet`** suppresses those tick lines (failure diagnostics still print). See **`docs/phase4b-scenario.md`**.
 
-`aetherforge_serve` binds **`127.0.0.1:8787`** (HTTP only — no WebSocket in Phase 1d).
+`aetherforge_serve` defaults to **`127.0.0.1:8787`** (override with **`AETHERFORGE_HTTP_ADDR`**). HTTP only — no WebSocket in Phase 1d. Production: TLS at a proxy — **`docs/deployment.md`**.
 
 **Session action cap (Phase 7a):** optional env **`AETHERFORGE_MAX_ACTIONS_PER_SESSION`** (default `10000`) — returns **429** + `SESSION_ACTION_QUOTA` when exceeded. See **`docs/phase7a-server-hardening.md`**.
 
@@ -73,7 +75,7 @@ See **`python/aetherforge_sdk/README.md`** — `AetherForgeClient` + Pydantic mo
 
 ## Docs
 
-- `docs/roadmap-to-complete-project.md` — **remaining work to v1 / demo**
+- `docs/roadmap-to-complete-project.md` — **engine product roadmap** (milestone table + continuous QA)
 - `docs/demo-showcase.md` — **5-minute demo script**
 - `docs/aetherforge-director-log.md` / `docs/aetherforge-designer-log.md` — program logs
 - `docs/phase1a-stack-memo.md`
@@ -94,6 +96,9 @@ See **`python/aetherforge_sdk/README.md`** — `AetherForgeClient` + Pydantic mo
 - `docs/adr/0001-observation-stream-transport.md`
 - `docs/phase9b-sse.md`
 - `docs/nl-agentic-hooks.md` — NL / agentic integration (design stub)
+- `docs/deployment-rate-limiting.md` — proxy vs in-process HTTP rate limits
+- `docs/platform-headed-roadmap.md` — headed client phases (beyond wgpu smoke)
+- `examples/nl-prompt-template.md` / `examples/nl_tool_use_sdk_sample.py` — NL-0 / NL-1 sketches
 
 ## License
 
