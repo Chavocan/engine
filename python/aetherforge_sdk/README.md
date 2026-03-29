@@ -16,7 +16,7 @@ pip install -e ".[dev]"
 
 Dev tools: **pytest**, **ruff** (`ruff check .` from this directory).
 
-## Example script
+## Example scripts
 
 With the server running (`cargo run -p aetherforge_cli --bin aetherforge_serve` from repo root):
 
@@ -28,6 +28,15 @@ python examples/ping_observation.py
 
 Or: `python examples/ping_observation.py http://127.0.0.1:8787`  
 (`AETHERFORGE_TEST_URL` is also accepted.)
+
+**Terminal HUD** (formatted tick / mission / farm — R2 v1):
+
+```bash
+python examples/observation_hud.py http://127.0.0.1:8787
+# With farm-stub server: full demo loop then HUD
+cargo run -p aetherforge_cli --features farm-stub --bin aetherforge_serve
+python examples/observation_hud.py http://127.0.0.1:8787 --farm-stub-demo --seed 42
+```
 
 ## Example (inline)
 

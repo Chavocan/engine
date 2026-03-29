@@ -95,6 +95,14 @@ Or run the small example:
 python python/aetherforge_sdk/examples/ping_observation.py http://127.0.0.1:8787
 ```
 
+Formatted **terminal HUD** (tick, mission, farm — use **`farm-stub`** serve for farm fields):
+
+```bash
+cargo run -p aetherforge_cli --features farm-stub --bin aetherforge_serve
+# other terminal:
+python python/aetherforge_sdk/examples/observation_hud.py http://127.0.0.1:8787 --farm-stub-demo --seed 42
+```
+
 ## 7. Autonomous player (optional)
 
 Requires **Terminal A** (`aetherforge_serve`). **Terminal B**:

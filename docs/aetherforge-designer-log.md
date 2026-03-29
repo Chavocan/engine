@@ -4,6 +4,14 @@ Append-only implementation notes. Mirror bullet labels from `aetherforge-designe
 
 ---
 
+## 2026-03-29 (R2 terminal HUD + R3 ADR 0004)
+
+- **Accomplished this cycle:** **`python/aetherforge_sdk/examples/observation_hud.py`**; **`docs/adr/0004-runtime-embedding.md`**; roadmap **R2** / **R3** rows **done (v1)**; **`platform-headed-roadmap`**, **`director-program-roadmap`**, **`phase1d-verification`**, SDK **`README`**, **`CHANGELOG`**.
+- **Processes used:** `ruff check` on new example.
+- **Pitfalls / observations:** Headed **winit** track unchanged — R2 v1 is intentionally **thin** (HTTP + formatted text).
+- **Learnings / best practices:** Same **`Observation`** model as integration tests keeps HUD honest vs schema.
+- **Next cycle action items:** **platform-headed** P1 window, or **R5** NL depth if product pulls it.
+
 ## 2026-03-29 (R1 flagship + R4 HTTP mission E2E)
 
 - **Accomplished this cycle:** **`flagship_farm_two_cycles.json`**, **`flagship_farm_http.json`**, **`docs/flagship-scenario.md`**, **`scenario_flagship_offline`**, CI **`farm-mission-http-e2e`**; roadmap **R1** / **R4** rows **done (v1)**; **`director-program-roadmap`** phases 4–5 / 7 adjusted; **`phase1d-verification`**, **`CONTRIBUTING`**, **`CHANGELOG`**.

@@ -16,11 +16,17 @@ class FarmPlot(BaseModel):
     growth_stage: int = 0
 
 
+class InventorySnapshot(BaseModel):
+    """Matches `aetherforge_farm::Inventory` on the wire (`items` map)."""
+
+    items: dict[str, int] = Field(default_factory=dict)
+
+
 class FarmSnapshot(BaseModel):
     day: int = 1
     time_minutes: int = 0
     plots: list[FarmPlot] = Field(default_factory=list)
-    inventory: dict[str, int] = Field(default_factory=dict)
+    inventory: InventorySnapshot = Field(default_factory=InventorySnapshot)
 
 
 class MissionSnapshot(BaseModel):

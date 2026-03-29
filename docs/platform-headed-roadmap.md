@@ -2,6 +2,8 @@
 
 **Current:** `aetherforge_platform` provides **`headed-smoke`** / **`aetherforge_wgpu_smoke`** — a headless `wgpu::Instance` compile/run check ([crates/aetherforge_platform](../crates/aetherforge_platform)). `platform_placeholder()` remains the public stub for a full loop.
 
+**R2 (Director program):** v1 **client surface** for observation is the Python terminal HUD — [`python/aetherforge_sdk/examples/observation_hud.py`](../python/aetherforge_sdk/examples/observation_hud.py) — not this crate. Phases below remain the **Rust headed** track.
+
 ## Planned phases (planning only)
 
 | Phase | Goal | Acceptance sketch |

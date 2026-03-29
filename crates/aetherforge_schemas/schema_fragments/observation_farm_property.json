@@ -26,10 +26,17 @@
         "additionalProperties": false
       }
     },
-    "inventory": {
-      "type": "object",
-      "additionalProperties": { "type": "integer", "minimum": 0 }
-    }
+        "inventory": {
+          "type": "object",
+          "required": ["items"],
+          "properties": {
+            "items": {
+              "type": "object",
+              "additionalProperties": { "type": "integer", "minimum": 0 }
+            }
+          },
+          "additionalProperties": false
+        }
   },
   "additionalProperties": false
 }

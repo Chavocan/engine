@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- **R2 / R3:** Python **`examples/observation_hud.py`** (terminal observation HUD); **ADR [`docs/adr/0004-runtime-embedding.md`](docs/adr/0004-runtime-embedding.md)** (Godot vs alternatives; **`aetherforge_serve`** as contract); **`platform-headed-roadmap.md`** notes R2 v1 vs winit phases.
+- **Observation farm `inventory`:** JSON Schema + SDK now match Rust wire shape **`inventory.items`** (map of item id → count); fragment **`observation_farm_property.json`** updated.
 - **R1 flagship + R4 HTTP proof:** **`examples/flagship_farm_two_cycles.json`**, **`examples/flagship_farm_http.json`**; **`docs/flagship-scenario.md`**; test **`scenario_flagship_offline`**; CI job **`farm-mission-http-e2e`** ( **`aetherforge_scenario`** HTTP to **`mission.outcome`** **`won`** ).
 - **R0 win vertical:** **`Observation.mission.outcome`** (`won` / `lost`); **`Observation.schema_version`** **`1.2.0`**; scenario field **`expect_mission_outcome`**; **`examples/farm_demo_loop.json`** asserts **`won`**; tests **`scenario_mission_offline`**; schema fragment **`observation_mission_property.json`**; Python **`MissionSnapshot`**.
 - **Roadmap realignment:** **`docs/roadmap-to-complete-project.md`** — **North star** + **§ On the rails** (R0–R5) for Director mission; kernel v0.1 marked **closed** in a dedicated section. **`agent-master-plan.md`**, **`director-program-roadmap.md`**, **`README`**, **`.cursor/rules`**: mission ≠ kernel complete.

@@ -99,6 +99,7 @@ See **`python/aetherforge_sdk/README.md`** — `AetherForgeClient` + Pydantic mo
 - `docs/release-v0.1.0.md`
 - `docs/backlog-post-v0.1.md`
 - `docs/adr/0001-observation-stream-transport.md`
+- `docs/adr/0004-runtime-embedding.md` — Godot vs alternatives; HTTP contract
 - `docs/phase9b-sse.md`
 - `docs/nl-agentic-hooks.md` — NL / agentic integration (design stub)
 - `docs/deployment-rate-limiting.md` — proxy vs in-process HTTP rate limits
