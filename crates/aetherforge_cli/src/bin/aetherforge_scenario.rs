@@ -3,7 +3,7 @@
 use std::path::PathBuf;
 use std::process::ExitCode;
 
-use aetherforge_cli::scenario::{run_http, run_offline, ScenarioFile};
+use aetherforge_cli::scenario::{run_http, run_offline_with_ticks, ScenarioFile};
 use clap::Parser;
 
 #[derive(Parser, Debug)]
@@ -12,6 +12,12 @@ struct Args {
     /// Drive `Simulation` in-process (no network; CI-friendly).
     #[arg(long)]
     offline: bool,
+    /// After each simulation or HTTP step, print one JSON object per line to stderr (`{"event":"tick","tick":…}`).
+    #[arg(long)]
+    emit_tick_json: bool,
+    /// Suppress `--emit-tick-json` stderr lines (failure diagnostics still print).
+    #[arg(long)]
+    quiet: bool,
     /// Scenario JSON path.
     path: PathBuf,
 }
@@ -53,8 +59,18 @@ async fn main() -> ExitCode {
         }
     };
 
+    let emit = args.emit_tick_json && !args.quiet;
+    let mut on_tick = |tick: u64| {
+        if emit {
+            eprintln!(
+                "{}",
+                serde_json::json!({ "event": "tick", "tick": tick })
+            );
+        }
+    };
+
     let result = if args.offline {
-        run_offline(&scenario)
+        run_offline_with_ticks(&scenario, &mut on_tick)
     } else {
         let base = match scenario.base_url.as_deref() {
             Some(b) if !b.is_empty() => b,
@@ -72,7 +88,7 @@ async fn main() -> ExitCode {
                 return ExitCode::from(1);
             }
         };
-        run_http(&scenario, base).await
+        run_http(&scenario, base, &mut on_tick).await
     };
 
     match result {

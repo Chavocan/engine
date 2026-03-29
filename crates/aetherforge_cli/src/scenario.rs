@@ -76,15 +76,30 @@ fn check_tick(
     Ok(())
 }
 
-pub fn run_offline(file: &ScenarioFile) -> Result<(), ScenarioFailure> {
+/// Run all scenario steps in-process. `on_tick` is invoked after each `Simulation::step` with the
+/// current tick value (offline mode only).
+pub fn run_offline_with_ticks(
+    file: &ScenarioFile,
+    on_tick: &mut impl FnMut(u64),
+) -> Result<(), ScenarioFailure> {
     let mut sim = Simulation::with_config(SimulationConfig::new("scenario-offline", file.seed));
-    apply_steps(&mut sim, &file.steps, |s| s.snapshot_observation().tick)
+    apply_steps(
+        &mut sim,
+        &file.steps,
+        |s| s.snapshot_observation().tick,
+        on_tick,
+    )
+}
+
+pub fn run_offline(file: &ScenarioFile) -> Result<(), ScenarioFailure> {
+    run_offline_with_ticks(file, &mut |_| {})
 }
 
 fn apply_steps(
     sim: &mut Simulation,
     steps: &[Step],
     current_tick: impl Fn(&Simulation) -> u64,
+    on_tick: &mut impl FnMut(u64),
 ) -> Result<(), ScenarioFailure> {
     for (i, step) in steps.iter().enumerate() {
         match step {
@@ -100,6 +115,7 @@ fn apply_steps(
                         },
                     );
                     sim.step();
+                    on_tick(current_tick(sim));
                 }
                 check_tick(i, *expect_tick, current_tick(sim))?;
             }
@@ -116,6 +132,7 @@ fn apply_steps(
                     },
                 );
                 sim.step();
+                on_tick(current_tick(sim));
                 check_tick(i, *expect_tick, current_tick(sim))?;
             }
         }
@@ -123,7 +140,15 @@ fn apply_steps(
     Ok(())
 }
 
-pub async fn run_http(file: &ScenarioFile, base_url: &str) -> Result<(), ScenarioFailure> {
+/// After each HTTP step, `on_tick` receives the session tick from the observation endpoint.
+pub async fn run_http<F>(
+    file: &ScenarioFile,
+    base_url: &str,
+    on_tick: &mut F,
+) -> Result<(), ScenarioFailure>
+where
+    F: FnMut(u64) + Send,
+{
     let base = base_url.trim_end_matches('/');
     let client = reqwest::Client::builder()
         .timeout(std::time::Duration::from_secs(60))
@@ -238,6 +263,7 @@ pub async fn run_http(file: &ScenarioFile, base_url: &str) -> Result<(), Scenari
 
         let tick = fetch_tick(&client, base, sid, i).await?;
         check_tick(i, step.expect_tick(), tick)?;
+        on_tick(tick);
     }
 
     Ok(())

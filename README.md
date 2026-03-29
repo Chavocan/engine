@@ -23,12 +23,13 @@ cargo test -p aetherforge_control
 cargo run -p aetherforge_cli --bin aetherforge_headless
 cargo run -p aetherforge_cli --bin aetherforge_serve
 cargo run -p aetherforge_cli --bin aetherforge_scenario -- --offline examples/scenario-min.json
+cargo run -p aetherforge_cli --bin aetherforge_scenario -- --offline --emit-tick-json examples/scenario-min.json
 cargo run -p aetherforge_player -- --base-url http://127.0.0.1:8787 --policy round_robin --max-steps 5 --intents noop
 ```
 
 The headless binary applies a stub intent, advances **one** tick, and prints **one** JSON line (observation) to stdout.
 
-**Scenario runner (Phase 4b):** `aetherforge_scenario` runs a JSON script of `batch` / `single` steps; use **`--offline`** for in-process soak (no server). See **`docs/phase4b-scenario.md`**.
+**Scenario runner (Phase 4b):** `aetherforge_scenario` runs a JSON script of `batch` / `single` steps; use **`--offline`** for in-process soak (no server). Add **`--emit-tick-json`** to print one `{"event":"tick","tick":…}` object per step to **stderr**; **`--quiet`** suppresses those tick lines (failure diagnostics still print). See **`docs/phase4b-scenario.md`**.
 
 `aetherforge_serve` binds **`127.0.0.1:8787`** (HTTP only — no WebSocket in Phase 1d).
 
