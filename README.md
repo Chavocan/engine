@@ -14,6 +14,15 @@ git clone https://github.com/Chavocan/engine.git
 
 - [Rust](https://rustup.rs/) stable (2021 edition)
 
+## Quick verify (~60s)
+
+```bash
+cargo test
+cargo run -p aetherforge_cli --features farm-stub --bin aetherforge_scenario -- --offline examples/farm_demo_loop.json
+```
+
+Same pair is what **Rust CI** exercises (see **`CONTRIBUTING.md`**).
+
 ## Commands
 
 ```bash
