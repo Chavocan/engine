@@ -18,7 +18,7 @@ Living summary aligned with the Cursor **AetherForge Director** plan. Update whe
 | P0 | **Farm gameplay loop** | **Done (stub):** `farm_harvest` + `farm_demo_loop_plant_grow_harvest` + `examples/farm_demo_loop.json`. |
 | P0 | **Demo showcase doc** | `docs/demo-showcase.md` — run offline scenario per doc; verify on your machine (`cargo`). |
 | P1 | **CI golden playthrough** | Workflow (or script) runs scenario or `aetherforge_player` against `serve` (or offline-only first) and fails on error. |
-| P1 | **Player crate split** | Separate crate; `cargo tree` shows no `aetherforge_sim` dep for player package. |
+| P1 | **Player crate split** | **Done:** `crates/aetherforge_player` (ADR 0002). Verify runtime graph: `cargo tree -p aetherforge_player -e normal` (no `aetherforge_sim`). |
 | P2 | **Schema CI** | Generated or checked schemas match `schemas/v1/` in CI. |
 | P2 | **SSE caps + play-log stderr** | Per `docs/backlog-post-v0.1.md`. |
 | P3 | **Headed wgpu smoke** | Feature-gated window or documented CI skip. |

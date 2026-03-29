@@ -1,12 +1,11 @@
 #!/usr/bin/env bash
-# Phase 7b — Player path must not contain direct `use aetherforge_sim` imports.
-# Note: the `aetherforge_cli` *package* still depends on `aetherforge_sim` for other
-# binaries; this check enforces the HTTP-only *source* boundary for the player.
+# Phase 7b / ADR 0002 — `aetherforge_player` crate must not import the sim kernel in source.
+# The package has no `aetherforge_sim` dependency; this script scans player sources.
 set -euo pipefail
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 FILES=(
-  "$ROOT/crates/aetherforge_cli/src/player.rs"
-  "$ROOT/crates/aetherforge_cli/src/bin/aetherforge_player.rs"
+  "$ROOT/crates/aetherforge_player/src/player.rs"
+  "$ROOT/crates/aetherforge_player/src/main.rs"
 )
 for f in "${FILES[@]}"; do
   if [[ ! -f "$f" ]]; then
@@ -18,4 +17,4 @@ for f in "${FILES[@]}"; do
     exit 1
   fi
 done
-echo "OK: player sources have no direct aetherforge_sim imports"
+echo "OK: aetherforge_player sources have no direct aetherforge_sim imports"

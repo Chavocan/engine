@@ -64,6 +64,20 @@ dependencies = [
 ]
 
 [[package]]
+name = "aetherforge_player"
+version = "0.1.0"
+dependencies = [
+ "aetherforge_control",
+ "axum",
+ "clap",
+ "rand 0.8.5",
+ "reqwest",
+ "serde",
+ "serde_json",
+ "tokio",
+]
+
+[[package]]
 name = "aetherforge_schemas"
 version = "0.1.0"
 dependencies = [

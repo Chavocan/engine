@@ -1,6 +1,6 @@
 # Phase 6 — Autonomous player (design only)
 
-**Status:** Phase **6b** adds **`aetherforge_player`** (`crates/aetherforge_cli`) — HTTP-only loop per below. This document remains the architectural source of truth.
+**Status:** Phase **6b** / **ADR 0002** — **`aetherforge_player`** is its own workspace crate (`crates/aetherforge_player`) with **no** `aetherforge_sim` dependency. HTTP-only loop per below. This document remains the architectural source of truth.
 
 ## 1. Observation-only policy
 
@@ -57,7 +57,7 @@ Success = observation after the loop matches the scenario’s implied end state 
 - **`aetherforge_scenario`:** declarative JSON steps; good for CI and golden files.
 - **`aetherforge_player` (6b):** imperative loop + policies (`random` / `round_robin`); optional **`--llm-exec`** + repeatable **`--llm-arg`** (argv only — **no** `sh -c` by default; avoid shell injection). May **generate** scenario traces for regression later.
 
-**Binary:** `cargo run -p aetherforge_cli --bin aetherforge_player -- --help`
+**Binary:** `cargo run -p aetherforge_player -- --help`
 
 ---
 
@@ -67,4 +67,4 @@ Success = observation after the loop matches the scenario’s implied end state 
 - **Processes:** Observation-only boundary defers all world logic to the server; player code stays a thin HTTP client.
 - **Pitfalls:** LLM subprocess contract must be **line-delimited JSON** with timeouts to avoid hung agents.
 - **Learnings:** Reusing **`examples/farm_5b_scenario.json`** as the MVP oracle ties Phase 4b/5b work to Phase 6 without new fixtures.
-- **Next:** Phase **6b** — thin `aetherforge_player` binary implementing random + round-robin + config file, pending Director approval.
+- **Next:** Harden LLM subprocess contract (timeouts, line-delimited JSON validation); optional CI **`cargo tree -p aetherforge_player -e normal`** guard (no `aetherforge_sim` on runtime edges).

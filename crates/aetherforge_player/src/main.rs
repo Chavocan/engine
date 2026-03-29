@@ -1,8 +1,8 @@
-//! Phase 6b — HTTP-only policy loop (no direct sim kernel imports in this binary).
+//! Phase 6b — HTTP-only policy loop (crate `aetherforge_player`; no `aetherforge_sim` dependency).
 
 use std::process::ExitCode;
 
-use aetherforge_cli::player::{run_player, PlayerConfig, PlayerPolicy};
+use aetherforge_player::{run_player, PlayerConfig, PlayerPolicy};
 use clap::Parser;
 
 #[derive(Parser, Debug)]

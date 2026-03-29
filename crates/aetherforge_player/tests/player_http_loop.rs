@@ -1,6 +1,6 @@
 //! Integration: `run_player` against in-process Axum control plane.
 
-use aetherforge_cli::player::{run_player, PlayerConfig, PlayerPolicy};
+use aetherforge_player::{run_player, PlayerConfig, PlayerPolicy};
 use axum::Router;
 use tokio::net::TcpListener;
 

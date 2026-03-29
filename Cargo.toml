@@ -8,6 +8,7 @@ members = [
     "crates/aetherforge_platform",
     "crates/aetherforge_game",
     "crates/aetherforge_cli",
+    "crates/aetherforge_player",
 ]
 
 [workspace.package]

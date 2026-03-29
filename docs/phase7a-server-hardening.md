@@ -27,4 +27,4 @@
 
 - **429 vs 403:** Quota is a **backpressure** signal for agents; message points to new session or raising the env var.
 - **Session entry:** Merged `Simulation` + `actions_applied` under one mutex to keep counting consistent with application order.
-- **Follow-up:** Replace `player_no_sim_guard` substring check with a **`cargo metadata`** dependency assertion for `aetherforge_player` (Director note).
+- **Follow-up (optional):** Add CI step that inspects **`cargo tree -p aetherforge_player -e normal`** (expect **no** `aetherforge_sim` on **runtime** edges). Do **not** use bare **`-i aetherforge_sim`** without `-e normal` — dev-deps pull `aetherforge_control`, which depends on sim for tests. Keep script + Rust guard as source-level defense in depth.

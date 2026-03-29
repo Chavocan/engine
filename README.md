@@ -23,7 +23,7 @@ cargo test -p aetherforge_control
 cargo run -p aetherforge_cli --bin aetherforge_headless
 cargo run -p aetherforge_cli --bin aetherforge_serve
 cargo run -p aetherforge_cli --bin aetherforge_scenario -- --offline examples/scenario-min.json
-cargo run -p aetherforge_cli --bin aetherforge_player -- --base-url http://127.0.0.1:8787 --policy round_robin --max-steps 5 --intents noop
+cargo run -p aetherforge_player -- --base-url http://127.0.0.1:8787 --policy round_robin --max-steps 5 --intents noop
 ```
 
 The headless binary applies a stub intent, advances **one** tick, and prints **one** JSON line (observation) to stdout.
@@ -56,7 +56,8 @@ See **`python/aetherforge_sdk/README.md`** — `AetherForgeClient` + Pydantic mo
 | `crates/aetherforge_schemas` | Rust v1 types (expand with `schemars`) |
 | `crates/aetherforge_platform` | Headed stub |
 | `crates/aetherforge_game` | Game content stub |
-| `crates/aetherforge_cli` | `aetherforge_headless`, `aetherforge_serve`, `aetherforge_scenario`, `aetherforge_player` |
+| `crates/aetherforge_cli` | `aetherforge_headless`, `aetherforge_serve`, `aetherforge_scenario` |
+| `crates/aetherforge_player` | `aetherforge_player` (HTTP-only autonomous agent; **no** `aetherforge_sim` dep) |
 | `schemas/v1/` | JSON Schema placeholders |
 | `docs/` | Phase memos + specs |
 

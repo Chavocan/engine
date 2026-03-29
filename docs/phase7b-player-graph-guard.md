@@ -2,8 +2,9 @@
 
 ## What we enforce
 
-- **Script:** `scripts/check_player_no_sim_import.sh` (also mirrored by Rust test `player_no_sim_guard`).
-- **Rule:** `crates/aetherforge_cli/src/player.rs` and `src/bin/aetherforge_player.rs` must not contain a **direct** import of the sim kernel crate, e.g. `use aetherforge_sim::...` or `extern crate aetherforge_sim`.
+- **Script:** `scripts/check_player_no_sim_import.sh` (mirrored by Rust test `player_no_sim_guard` in **`aetherforge_player`**).
+- **Rule:** `crates/aetherforge_player/src/player.rs` and `src/main.rs` must not contain a **direct** import of the sim kernel crate, e.g. `use aetherforge_sim::...` or `extern crate aetherforge_sim`.
+- **Package:** **`aetherforge_player`** has **no** `aetherforge_sim` dependency in `Cargo.toml` (ADR 0002).
 - **Comments** (`//`, `//!`) are ignored by the Rust test; the shell script only matches `use` at line start after whitespace.
 
 ## CI
@@ -15,11 +16,16 @@
 
 (See `.github/workflows/ci.yml`.)
 
-## Why not `cargo tree --bin aetherforge_player -i aetherforge_sim`?
+## Optional graph check
 
-The **`aetherforge_cli` package** legitimately depends on **`aetherforge_sim`** for `aetherforge_headless` and `aetherforge_scenario`. Cargo resolves dependencies **per package**, not per binary, so the sim crate still appears in the dependency graph for **all** binaries in that package until the player is split into its own crate.
+Now that the player is a **separate crate**, verify **runtime** (non-dev) edges only:
 
-## Documentation & Learning Log (Employee AI)
+```bash
+cargo tree -p aetherforge_player -e normal
+```
 
-- **Invariant:** “No sim in the player **code path**” matches remote-AI parity; package-level linkage is an implementation detail until a **`aetherforge_player` crate** split.
-- **Next:** If we need a true graph-empty check, extract a thin `aetherforge_player` package with only HTTP deps.
+Expect **no `aetherforge_sim`** in that output.
+
+**Note:** `cargo tree -p aetherforge_player -i aetherforge_sim` (without `-e normal`) may still show a path **via `dev-dependencies`** (`aetherforge_control` for in-process integration tests). That is **expected** and does **not** contradict “no sim in player **source**” or “no sim required to **ship** the player binary.”
+
+The **`aetherforge_cli`** package still depends on **`aetherforge_sim`** for other binaries — unrelated to the player crate.

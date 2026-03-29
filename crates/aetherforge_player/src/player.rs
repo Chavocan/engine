@@ -1,10 +1,10 @@
-//! HTTP-only autonomous player (Phase 6b). **Do not import the sim kernel crate here** — remote-AI parity.
+//! HTTP-only autonomous player (Phase 6b / ADR 0002). **Do not import the sim kernel crate here** — remote-AI parity.
 
 use std::process::{Command, Stdio};
 
+use rand::rngs::StdRng;
 use rand::seq::SliceRandom;
 use rand::SeedableRng;
-use rand::rngs::StdRng;
 use serde::Deserialize;
 use serde_json::{json, Value};
 

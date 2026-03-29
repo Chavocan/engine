@@ -18,8 +18,8 @@
 | Farm stub: `farm_plant` adds one plot (feature **`farm-stub`**) | `crates/aetherforge_sim/src/lib.rs` (`farm_stub_tests`) | `farm_plant_adds_plot_to_observation` — run `cargo test -p aetherforge_sim --features farm-stub` |
 | Farm stub: `farm_advance_day` bumps `growth_stage` + `day` | same | `farm_plant_then_advance_increases_stage` |
 | Farm stub: `farm_harvest` moves ripe crops to `inventory`, clears ripe plots | same | `farm_demo_loop_plant_grow_harvest` — `cargo test -p aetherforge_sim --features farm-stub` |
-| HTTP-only player: round-robin loop vs in-process Axum | `crates/aetherforge_cli/tests/player_http_loop.rs` | `player_round_robin_stops_after_max_steps` |
-| Player sources: no direct `use aetherforge_sim` lines | `crates/aetherforge_cli/tests/player_no_sim_guard.rs` | `player_sources_have_no_direct_sim_import_lines`; CI: `scripts/check_player_no_sim_import.sh` |
+| HTTP-only player: round-robin loop vs in-process Axum | `crates/aetherforge_player/tests/player_http_loop.rs` | `player_round_robin_stops_after_max_steps` |
+| Player sources: no direct `use aetherforge_sim` lines | `crates/aetherforge_player/tests/player_no_sim_guard.rs` | `player_sources_have_no_direct_sim_import_lines`; CI: `scripts/check_player_no_sim_import.sh` |
 | Session action quota: third single action → **429** | `crates/aetherforge_control/tests/http_action_quota.rs` | `single_actions_hit_quota_then_429` |
 | Batch over quota: **no** partial apply, tick unchanged | same | `batch_rejected_when_would_exceed_quota_without_partial_apply` |
 | SSE observation stream: event on tick change (`sse-obs`) | `crates/aetherforge_control/tests/sse_observe_stream.rs` | `observe_stream_emits_when_tick_changes` — `cargo test -p aetherforge_control --features sse-obs` |

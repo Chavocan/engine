@@ -25,10 +25,6 @@ path = "src/bin/aetherforge_serve.rs"
 name = "aetherforge_scenario"
 path = "src/bin/aetherforge_scenario.rs"
 
-[[bin]]
-name = "aetherforge_player"
-path = "src/bin/aetherforge_player.rs"
-
 [dependencies]
 aetherforge_control = { path = "../aetherforge_control" }
 aetherforge_schemas = { path = "../aetherforge_schemas" }

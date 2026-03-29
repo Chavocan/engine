@@ -64,7 +64,7 @@ Drive a few actions; point out **JSON lines** with `event` for `action_applied`,
 With server up:
 
 ```bash
-cargo run -p aetherforge_cli --bin aetherforge_player -- --base-url http://127.0.0.1:8787 --seed 1 --policy round_robin --max-steps 8 --intents farm_plant,farm_advance_day,farm_harvest
+cargo run -p aetherforge_player -- --base-url http://127.0.0.1:8787 --seed 1 --policy round_robin --max-steps 8 --intents farm_plant,farm_advance_day,farm_harvest
 ```
 
 > Requires **`farm-stub`** so **`farm_harvest`** is applied in sim.

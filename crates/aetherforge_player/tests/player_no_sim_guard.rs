@@ -1,11 +1,11 @@
-//! Phase 7b — player modules must not contain direct `use aetherforge_sim` lines.
+//! Phase 7b / ADR 0002 — player crate must not contain direct `use aetherforge_sim` lines.
 
 use std::fs;
 
 #[test]
 fn player_sources_have_no_direct_sim_import_lines() {
     let root = std::path::Path::new(env!("CARGO_MANIFEST_DIR"));
-    for rel in ["src/player.rs", "src/bin/aetherforge_player.rs"] {
+    for rel in ["src/player.rs", "src/main.rs"] {
         let p = root.join(rel);
         let s = fs::read_to_string(&p).unwrap_or_else(|e| panic!("read {p:?}: {e}"));
         for (i, line) in s.lines().enumerate() {

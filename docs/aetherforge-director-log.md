@@ -51,3 +51,11 @@ Append-only session summaries for the AetherForge program. Mirror bullet labels 
 - **Pitfalls / observations:** SECURITY contact is advisory-first until maintainers add email.
 - **Learnings / best practices:** NL path stays sidecar-first per spec.
 - **Next cycle action items:** **B** confirmation; **P1** `aetherforge_player` crate split scoping.
+
+## 2026-03-29 (ADR 0002 — player crate split landed)
+
+- **Accomplished this cycle:** Workspace member **`crates/aetherforge_player`**; removed player module + bin from **`aetherforge_cli`**; moved integration tests; updated **`check_player_no_sim_import.sh`**, **README**, **demo-showcase**, **phase6** / **phase7b**, **roadmap** / **backlog**, **ADR 0002** status + checklist, **CHANGELOG**.
+- **Processes used:** Handoff from summarized session; grep-driven doc sweep.
+- **Pitfalls / observations:** Shell may still lack **`cargo`** — verify with **`cargo test`** locally or on **GitHub Actions**.
+- **Learnings / best practices:** Encode HTTP-only player boundary in **Cargo.toml**, not only grep.
+- **Next cycle action items:** **B** verify — **PASS** (see designer log): full **`cargo test`** green; **`cargo tree -p aetherforge_player -e normal`** has **no** sim; **`-i`** without `-e normal` still shows sim **via dev-deps** (expected). Optional CI **`cargo tree -e normal`** guard; commit + push **`Chavocan/engine`**.
