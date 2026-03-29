@@ -42,6 +42,7 @@ cargo run -p aetherforge_cli --bin aetherforge_scenario -- path/to/scenario.json
   - **`batch`:** `actions` is an array of v1 **Action** objects (same as control plane). Applied in order with the same semantics as `POST .../actions` (per-action enqueue + `step`).
   - **`single`:** One action via `kind`, optional `schema_version` (default `"1.0.0"`), optional `payload` (default `{}`).
 - **`expect_tick`** (optional per step): After the step, observation `tick` must equal this value (offline reads sim directly; HTTP uses `GET .../observation`). Omit to skip the assertion.
+- **`expect_mission_outcome`** (optional, file-level): After all steps, assert `Observation.mission.outcome` is **`won`** or **`lost`** (see **R0** in [`roadmap-to-complete-project.md`](roadmap-to-complete-project.md)). Requires sim/server logic that sets **`mission`** (e.g. **`farm-stub`** harvest demo).
 
 ## Exit status
 

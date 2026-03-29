@@ -4,7 +4,7 @@
 Run from repo root. Requires `cargo` on PATH.
 
 - **action.schema.json** — compared to **`aetherforge_export_action_schema`** (schemars).
-- **observation.schema.json** — `properties.farm` / `properties.world` must match **`schema_fragments/observation_*_property.json`** (hand-heavy slices; fragments are canonical).
+- **observation.schema.json** — `properties.farm` / `properties.world` / `properties.mission` must match **`schema_fragments/observation_*_property.json`** (hand-heavy slices; fragments are canonical).
 """
 
 from __future__ import annotations
@@ -18,6 +18,7 @@ _REPO = Path(__file__).resolve().parents[1]
 _SCHEMA_FRAG = _REPO / "crates" / "aetherforge_schemas" / "schema_fragments"
 _FRAGMENT_FARM = _SCHEMA_FRAG / "observation_farm_property.json"
 _FRAGMENT_WORLD = _SCHEMA_FRAG / "observation_world_property.json"
+_FRAGMENT_MISSION = _SCHEMA_FRAG / "observation_mission_property.json"
 _OBSERVATION_SCHEMA = _REPO / "schemas" / "v1" / "observation.schema.json"
 
 
@@ -96,10 +97,28 @@ def _check_observation_world_fragment() -> None:
     )
 
 
+def _check_observation_mission_fragment() -> None:
+    obs = json.loads(_OBSERVATION_SCHEMA.read_text(encoding="utf-8"))
+    mission = (obs.get("properties") or {}).get("mission")
+    fragment = json.loads(_FRAGMENT_MISSION.read_text(encoding="utf-8"))
+    if mission != fragment:
+        sys.stderr.write(
+            "observation.schema.json `properties.mission` drifts from schema_fragments "
+            f"observation_mission_property.json.\n--- in schema\n{json.dumps(mission, indent=2, sort_keys=True)}\n"
+            f"--- fragment\n{json.dumps(fragment, indent=2, sort_keys=True)}\n"
+        )
+        raise SystemExit(1)
+    print(
+        "OK: observation.schema.json mission slice matches "
+        "crates/aetherforge_schemas/schema_fragments/observation_mission_property.json"
+    )
+
+
 def main() -> None:
     _check_action()
     _check_observation_farm_fragment()
     _check_observation_world_fragment()
+    _check_observation_mission_fragment()
     print("OK: all wired schema drift checks passed")
 
 

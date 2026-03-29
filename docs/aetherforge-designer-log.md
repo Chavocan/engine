@@ -4,6 +4,14 @@ Append-only implementation notes. Mirror bullet labels from `aetherforge-designe
 
 ---
 
+## 2026-03-29 (R0 — mission outcome + scenario assert)
+
+- **Accomplished this cycle:** **`MissionOutcome`**, **`Observation.mission`**, schema **1.2.0**, **`expect_mission_outcome`** in **`aetherforge_cli::scenario`**, **`farm_demo_loop.json`**, **`scenario_mission_offline`** test, CI step, **`observation_mission_property.json`** drift, Python **`MissionSnapshot`**, roadmap **R0** row **done (v1)**.
+- **Processes used:** `cargo test --workspace`, `python scripts/check_schema_drift.py`, pytest.
+- **Pitfalls / observations:** **`lost`** path not yet used by sim — enum reserved for R0 extensions.
+- **Learnings / best practices:** Game vertical **proof** is **`mission` + scenario assert**, not tick-only.
+- **Next cycle action items:** **R1** flagship depth or **R4** autonomous job consuming **`won`**.
+
 ## 2026-03-29 (rails — roadmap vs kernel)
 
 - **Accomplished this cycle:** Rewrote **`roadmap-to-complete-project.md`**: **North star**, **Kernel v0.1 (closed)**, **§ On the rails** (R0–R5: win condition, flagship depth, client surface, runtime ADR, autonomous playthrough proof, NL). Updated **`agent-master-plan`**, **`director-program-roadmap`**, **`README`**, **`.cursor/rules/aetherforge-agent-ownership.mdc`**, **`CHANGELOG`**, **`AGENTS`**.

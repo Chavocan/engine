@@ -6,6 +6,7 @@ from aetherforge_sdk.models import (
     CreateSessionResponse,
     FarmPlot,
     FarmSnapshot,
+    MissionSnapshot,
     Observation,
     WorldSnapshot,
 )
@@ -18,6 +19,7 @@ __all__ = [
     "CreateSessionResponse",
     "FarmPlot",
     "FarmSnapshot",
+    "MissionSnapshot",
     "Observation",
     "WorldSnapshot",
 ]

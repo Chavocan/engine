@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- **R0 win vertical:** **`Observation.mission.outcome`** (`won` / `lost`); **`Observation.schema_version`** **`1.2.0`**; scenario field **`expect_mission_outcome`**; **`examples/farm_demo_loop.json`** asserts **`won`**; tests **`scenario_mission_offline`**; schema fragment **`observation_mission_property.json`**; Python **`MissionSnapshot`**.
 - **Roadmap realignment:** **`docs/roadmap-to-complete-project.md`** — **North star** + **§ On the rails** (R0–R5) for Director mission; kernel v0.1 marked **closed** in a dedicated section. **`agent-master-plan.md`**, **`director-program-roadmap.md`**, **`README`**, **`.cursor/rules`**: mission ≠ kernel complete.
 - **Usability:** **`docs/getting-started.md`** end-to-end path (clone → headless → scenario → HTTP → SDK); **`scripts/dev_smoke.sh`** / **`scripts/dev_smoke.ps1`** quick smoke (headless + offline farm scenario).
 - **Deployment:** **`AETHERFORGE_HTTP_ADDR`** for **`aetherforge_serve`** bind (default **`127.0.0.1:8787`**); **`docs/deployment.md`** operator index; **ADR [`docs/adr/0003-deployment-tls-and-auth.md`](docs/adr/0003-deployment-tls-and-auth.md)** (TLS/auth at proxy; in-process deferred).

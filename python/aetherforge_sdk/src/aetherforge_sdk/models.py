@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import Any
+from typing import Any, Literal
 
 from pydantic import BaseModel, Field
 
@@ -23,8 +23,12 @@ class FarmSnapshot(BaseModel):
     inventory: dict[str, int] = Field(default_factory=dict)
 
 
+class MissionSnapshot(BaseModel):
+    outcome: Literal["won", "lost"]
+
+
 class Observation(BaseModel):
-    """Mirrors `Observation` schema_version 1.1.0 (Rust `aetherforge_sim::Observation`)."""
+    """Mirrors `Observation` schema_version 1.2.0 (Rust `aetherforge_sim::Observation`)."""
 
     schema_version: str
     tick: int
@@ -33,6 +37,7 @@ class Observation(BaseModel):
     rng_draw: int
     world: WorldSnapshot = Field(default_factory=WorldSnapshot)
     farm: FarmSnapshot | None = None
+    mission: MissionSnapshot | None = None
 
 
 class CreateSessionResponse(BaseModel):

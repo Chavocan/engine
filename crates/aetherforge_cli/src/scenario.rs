@@ -2,7 +2,7 @@
 
 use aetherforge_control::ai_driver_enqueue_intent;
 use aetherforge_schemas::v1::Action;
-use aetherforge_sim::{Intent, Simulation, SimulationConfig};
+use aetherforge_sim::{Intent, MissionOutcome, Simulation, SimulationConfig};
 use serde::Deserialize;
 
 #[derive(Debug, Deserialize)]
@@ -12,6 +12,9 @@ pub struct ScenarioFile {
     pub base_url: Option<String>,
     pub seed: u64,
     pub steps: Vec<Step>,
+    /// After all steps, assert `Observation.mission.outcome` (**`won`** / **`lost`**). Requires **`farm-stub`** (or server built with it) when expecting **`won`** from the demo harvest vertical.
+    #[serde(default)]
+    pub expect_mission_outcome: Option<String>,
 }
 
 #[derive(Debug, Deserialize)]
@@ -88,7 +91,11 @@ pub fn run_offline_with_ticks(
         &file.steps,
         |s| s.snapshot_observation().tick,
         on_tick,
-    )
+    )?;
+    if let Some(ref want) = file.expect_mission_outcome {
+        check_expect_mission_outcome(file.steps.len(), want, &sim)?;
+    }
+    Ok(())
 }
 
 pub fn run_offline(file: &ScenarioFile) -> Result<(), ScenarioFailure> {
@@ -136,6 +143,56 @@ fn apply_steps(
                 check_tick(i, *expect_tick, current_tick(sim))?;
             }
         }
+    }
+    Ok(())
+}
+
+fn check_expect_mission_outcome(
+    step_index: usize,
+    want: &str,
+    sim: &Simulation,
+) -> Result<(), ScenarioFailure> {
+    let obs = sim.snapshot_observation();
+    let actual = obs.mission.as_ref().map(|m| match m.outcome {
+        MissionOutcome::Won => "won",
+        MissionOutcome::Lost => "lost",
+    });
+    check_mission_strings(step_index, want, actual)
+}
+
+fn check_mission_strings(
+    step_index: usize,
+    want: &str,
+    actual: Option<&str>,
+) -> Result<(), ScenarioFailure> {
+    let w = want.trim().to_ascii_lowercase();
+    if w == "won" {
+        if actual != Some("won") {
+            return Err(ScenarioFailure {
+                step_index,
+                reason: format!("mission outcome: expected won, got {actual:?}"),
+                expected_tick: None,
+                actual_tick: None,
+            });
+        }
+    } else if w == "lost" {
+        if actual != Some("lost") {
+            return Err(ScenarioFailure {
+                step_index,
+                reason: format!("mission outcome: expected lost, got {actual:?}"),
+                expected_tick: None,
+                actual_tick: None,
+            });
+        }
+    } else {
+        return Err(ScenarioFailure {
+            step_index,
+            reason: format!(
+                "expect_mission_outcome: invalid value {want:?} (use \"won\" or \"lost\")"
+            ),
+            expected_tick: None,
+            actual_tick: None,
+        });
     }
     Ok(())
 }
@@ -264,6 +321,38 @@ where
         let tick = fetch_tick(&client, base, sid, i).await?;
         check_tick(i, step.expect_tick(), tick)?;
         on_tick(tick);
+    }
+
+    if let Some(ref want) = file.expect_mission_outcome {
+        let url = format!("{base}/v1/sessions/{sid}/observation");
+        let res = client.get(&url).send().await.map_err(|e| ScenarioFailure {
+            step_index: file.steps.len(),
+            reason: format!("GET observation (mission check): {e}"),
+            expected_tick: None,
+            actual_tick: None,
+        })?;
+        if !res.status().is_success() {
+            return Err(ScenarioFailure {
+                step_index: file.steps.len(),
+                reason: format!(
+                    "GET observation (mission check): HTTP {}",
+                    res.status()
+                ),
+                expected_tick: None,
+                actual_tick: None,
+            });
+        }
+        let body: serde_json::Value = res.json().await.map_err(|e| ScenarioFailure {
+            step_index: file.steps.len(),
+            reason: format!("observation json (mission check): {e}"),
+            expected_tick: None,
+            actual_tick: None,
+        })?;
+        let actual = body
+            .get("mission")
+            .and_then(|m| m.get("outcome"))
+            .and_then(|x| x.as_str());
+        check_mission_strings(file.steps.len(), want, actual)?;
     }
 
     Ok(())

@@ -58,7 +58,7 @@ pub mod v1 {
     impl Default for Observation {
         fn default() -> Self {
             Self {
-                schema_version: "1.1.0".to_string(),
+                schema_version: "1.2.0".to_string(),
                 tick: 0,
                 run_id: String::new(),
                 message: String::new(),

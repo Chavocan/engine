@@ -52,7 +52,7 @@ These rows are the **real** “percent complete” for the **game + AI mission**
 
 | Priority | Milestone | Done when |
 |----------|-----------|------------|
-| **R0** | **Explicit win/lose game vertical** | At least one **scenario or player run** that ends in a **declared outcome** (win / lose / score threshold), not only expected tick — and **automated tests** assert that outcome (offline or HTTP). |
+| **R0** | **Explicit win/lose game vertical** | **Done (v1):** `Observation.mission.outcome` (`won` / `lost`) when **`farm-stub`** harvest completes; **`expect_mission_outcome`** in scenario JSON; **`examples/farm_demo_loop.json`** asserts **`won`**; tests **`scenario_mission_offline`**, sim **`farm_demo_loop_plant_grow_harvest`**. HTTP parity: same JSON from **`aetherforge_serve`** with **`farm-stub`**. Extend with **non-farm** outcomes later. |
 | **R1** | **Flagship scenario depth** | A **documented** reference script (JSON or multi-step) that exercises **multiple goals** beyond the short `farm_demo_loop` — still stub content, but **represents** the Harvest-Moon-style loop the Director calls for. |
 | **R2** | **Client surface for “play”** | Move past compile-only platform: **either** [`platform-headed-roadmap.md`](platform-headed-roadmap.md) **P1** (window + clean exit) **or** a minimal **web/terminal HUD** that renders observation state — so “game” is not only JSON in a terminal. |
 | **R3** | **Runtime / embedding decision** | **ADR or doc**: Godot vs Unity vs web-first vs Rust-only — **committed** tradeoffs, how `aetherforge_serve` or in-proc sim plugs in. |
@@ -67,7 +67,7 @@ Detail and phase mapping: [`director-program-roadmap.md`](director-program-roadm
 
 - **Kernel regression:** `cargo test`, golden playthrough, Python SDK steps — see [`CONTRIBUTING.md`](../CONTRIBUTING.md) and `ci.yml`.
 - **Mission regression:** extend tests and CI so **§ On the rails** rows gain **observable proof** (not just docs).
-- **Verification table:** [`phase1d-verification.md`](phase1d-verification.md) for HTTP/sim; add or link a **game-outcome** table when **R0** lands.
+- **Verification table:** [`phase1d-verification.md`](phase1d-verification.md) — includes **R0** mission / scenario rows.
 - **Agents:** [`AGENTS.md`](../AGENTS.md), [`agent-master-plan.md`](agent-master-plan.md).
 
 ## Institutional logs

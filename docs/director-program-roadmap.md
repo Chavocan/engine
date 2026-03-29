@@ -18,11 +18,10 @@ Tracks the **Lead Director** mission from [`../aetherforge-lead-director.agent.m
 
 ## Next actions (prioritize in order)
 
-1. **R0** — Implement **win/lose (or score) outcome** in sim + scenario tests so QA means something beyond tick equality ([`roadmap-to-complete-project.md`](roadmap-to-complete-project.md)).
-2. **R1** — Expand **flagship** JSON/script beyond short farm loop; document as the reference “game” for agents.
-3. **R2** — **Client surface**: first real window (see [`platform-headed-roadmap.md`](platform-headed-roadmap.md)) or minimal HUD — so play is not only raw JSON.
-4. **R3** — **ADR**: runtime embedding (Godot vs web vs Rust-only).
-5. **R4** — **CI job**: autonomous run to **R0** completion with assertions.
+1. **R1** — Expand **flagship** JSON/script beyond short farm loop; document as the reference “game” for agents.
+2. **R2** — **Client surface**: first real window (see [`platform-headed-roadmap.md`](platform-headed-roadmap.md)) or minimal HUD — so play is not only raw JSON.
+3. **R3** — **ADR**: runtime embedding (Godot vs web vs Rust-only).
+4. **R4** — **CI job**: autonomous run to **mission `won`** (or future outcomes) with assertions.
 
 ## Relationship to [`agent-master-plan.md`](agent-master-plan.md)
 

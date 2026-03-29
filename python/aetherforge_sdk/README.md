@@ -4,7 +4,7 @@ Thin **sync** HTTP client for the AetherForge control plane (`httpx` + **Pydanti
 
 ## Parity
 
-Targets **`Observation.schema_version` `1.1.0`** (includes `world` + `rng_draw`) and session create body **`{}`** minimum (optional `"seed": <int>`), matching `docs/phase1c-ai-interface-spec-v0.md` and the Rust workspace.
+Targets **`Observation.schema_version` `1.2.0`** (includes `world`, `rng_draw`, optional `mission`) and session create body **`{}`** minimum (optional `"seed": <int>`), matching `docs/phase1c-ai-interface-spec-v0.md` and the Rust workspace.
 
 ## Install (editable)
 

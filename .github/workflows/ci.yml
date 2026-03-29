@@ -17,7 +17,7 @@ jobs:
         run: bash scripts/golden_playthrough.sh
       - name: SSE observe stream (feature sse-obs)
         run: cargo test -p aetherforge_control --features sse-obs observe_stream --verbose
-      - name: Schema drift (action export + observation farm + world fragments)
+      - name: Schema drift (action export + observation farm + world + mission fragments)
         run: python scripts/check_schema_drift.py
       - name: NL interpret stub route (feature nl-interpret-stub)
         run: cargo test -p aetherforge_control --features nl-interpret-stub --test nl_interpret_stub --verbose
@@ -35,6 +35,8 @@ jobs:
           fi
       - name: Demo loop (offline farm scenario, farm-stub)
         run: cargo run -p aetherforge_cli --features farm-stub --bin aetherforge_scenario -- --offline examples/farm_demo_loop.json
+      - name: R0 mission outcome (scenario expect_mission_outcome, farm-stub)
+        run: cargo test -p aetherforge_cli --features farm-stub --test scenario_mission_offline --verbose
 
   python:
     runs-on: ubuntu-latest

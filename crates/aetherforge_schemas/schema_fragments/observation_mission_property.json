@@ -1,0 +1,8 @@
+{
+  "type": "object",
+  "required": ["outcome"],
+  "properties": {
+    "outcome": { "type": "string", "enum": ["won", "lost"] }
+  },
+  "additionalProperties": false
+}

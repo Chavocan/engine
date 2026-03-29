@@ -50,7 +50,7 @@ def mock_client() -> AetherForgeClient:
             )
         if method == "GET" and path == f"/v1/sessions/{sid}/observation":
             obs = {
-                "schema_version": "1.1.0",
+                "schema_version": "1.2.0",
                 "tick": 1,
                 "run_id": sid,
                 "message": "last_intent=noop",
@@ -79,7 +79,7 @@ def test_round_trip_mocked(mock_client: AetherForgeClient) -> None:
         ack = mock_client.apply_action(s.session_id, "noop", payload={})
         assert ack.ok and ack.tick == 1
         obs = mock_client.get_observation(s.session_id)
-        assert obs.schema_version == "1.1.0"
+        assert obs.schema_version == "1.2.0"
         assert obs.tick == 1
         batch = mock_client.apply_actions(
             s.session_id,
@@ -98,7 +98,7 @@ def test_observe_stream_mock_sse_body() -> None:
     sid = "stream-session-01"
     line = json.dumps(
         {
-            "schema_version": "1.1.0",
+            "schema_version": "1.2.0",
             "tick": 0,
             "run_id": sid,
             "message": "m",
@@ -127,6 +127,6 @@ def test_observe_stream_mock_sse_body() -> None:
         events = list(c.observe_stream(sid))
         assert len(events) == 1
         assert events[0].tick == 0
-        assert events[0].schema_version == "1.1.0"
+        assert events[0].schema_version == "1.2.0"
     finally:
         c.close()

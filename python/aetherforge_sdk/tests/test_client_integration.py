@@ -24,7 +24,7 @@ def test_round_trip_e2e() -> None:
         assert ack.tick == 1
 
         obs = c.get_observation(created.session_id)
-        assert obs.schema_version == "1.1.0"
+        assert obs.schema_version == "1.2.0"
         assert obs.tick == 1
         assert "sdk_probe" in obs.message
         assert obs.world.world_version == "1.0.0"

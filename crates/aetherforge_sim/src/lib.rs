@@ -28,9 +28,22 @@ impl Default for WorldSnapshot {
     }
 }
 
+/// Declared result for **R0** mission vertical (e.g. demo farm harvest complete).
+#[derive(Debug, Clone, Copy, Serialize, Deserialize, PartialEq, Eq)]
+#[serde(rename_all = "snake_case")]
+pub enum MissionOutcome {
+    Won,
+    Lost,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq)]
+pub struct MissionSnapshot {
+    pub outcome: MissionOutcome,
+}
+
 #[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
 pub struct Observation {
-    /// Observation envelope version (includes `world` since 1.1.0).
+    /// Observation envelope version (includes `world` since 1.1.0; optional `mission` since 1.2.0).
     pub schema_version: String,
     pub tick: u64,
     pub run_id: String,
@@ -42,6 +55,9 @@ pub struct Observation {
     /// Present only when built with **`farm-stub`** and serialized if `Some` (default builds omit key).
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub farm: Option<aetherforge_farm::FarmSnapshot>,
+    /// Optional mission result (e.g. **`Won`** after first successful stub harvest). Omitted when no outcome yet.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub mission: Option<MissionSnapshot>,
 }
 
 #[derive(Debug, Default, Clone, Serialize, Deserialize)]
@@ -152,8 +168,12 @@ impl Simulation {
         ));
         #[cfg(not(feature = "farm-stub"))]
         let farm = None;
+        #[cfg(feature = "farm-stub")]
+        let mission = mission_from_farm_stub(&self.farm_world);
+        #[cfg(not(feature = "farm-stub"))]
+        let mission = None;
         Observation {
-            schema_version: "1.1.0".to_string(),
+            schema_version: "1.2.0".to_string(),
             tick: self.tick,
             run_id: self.run_id.clone(),
             message: if self.last_intent_kind.is_empty() {
@@ -164,7 +184,25 @@ impl Simulation {
             rng_draw: self.rng_draw,
             world: WorldSnapshot::default(),
             farm,
+            mission,
         }
+    }
+}
+
+#[cfg(feature = "farm-stub")]
+fn mission_from_farm_stub(world: &aetherforge_farm::FarmWorld) -> Option<MissionSnapshot> {
+    let harvested = world
+        .inventory
+        .items
+        .get("harvested_stub_crop")
+        .copied()
+        .unwrap_or(0);
+    if harvested >= 1 {
+        Some(MissionSnapshot {
+            outcome: MissionOutcome::Won,
+        })
+    } else {
+        None
     }
 }
 
@@ -276,6 +314,13 @@ mod farm_stub_tests {
         assert_eq!(
             farm2.inventory.items.get("harvested_stub_crop").copied(),
             Some(1)
+        );
+        assert_eq!(obs2.schema_version, "1.2.0");
+        assert_eq!(
+            obs2.mission,
+            Some(MissionSnapshot {
+                outcome: MissionOutcome::Won,
+            })
         );
     }
 }
