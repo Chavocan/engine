@@ -39,7 +39,7 @@ cargo run -p aetherforge_cli --bin aetherforge_headless
 
 ## 3b. Headed window (GPU + display)
 
-Opens a **960×540** window: **wgpu** clear + in-process **farm-stub** sim (same scripted loop as `farm_demo_loop`). The **title bar** shows tick, mission, and farm fields as a minimal HUD. Requires a GPU driver; close the window or set a timeout:
+Opens a **960×540** window: **wgpu** clear + in-process **farm-stub** sim. **Keyboard** sends intents (**P** or **1** plant, **D** or **2** day, **H** or **3** harvest, **Space** noop) — same `kind` strings as HTTP. The **title bar** shows state + a short keymap. Optional **`AETHERFORGE_WINDOW_AUTO_DEMO=1`** replays the scripted 5-step loop every frame (no keys). Requires a GPU driver; close the window or set a timeout:
 
 ```bash
 cargo run -p aetherforge_platform --features windowed --bin aetherforge_window

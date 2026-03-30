@@ -4,6 +4,14 @@ Append-only implementation notes. Mirror bullet labels from `aetherforge-designe
 
 ---
 
+## 2026-03-29 (platform P4 — keyboard → Intent)
+
+- **Accomplished this cycle:** **`aetherforge_window`** maps **P**/1, **D**/2, **H**/3, **Space** to **`farm_plant`** / **`farm_advance_day`** / **`farm_harvest`** / **`noop`**; default **input-driven**; **`AETHERFORGE_WINDOW_AUTO_DEMO=1`** restores auto loop; **`platform-headed-roadmap`** P4 done; roadmap R2 **v4**; **`getting-started`**, **`phase1d`**, **`CHANGELOG`**, **`director-program-roadmap`**, **`lib.rs`**.
+- **Processes used:** `cargo build -p aetherforge_platform --features windowed`; `cargo clippy`.
+- **Pitfalls / observations:** Intent kinds match HTTP **`action.kind`** strings for parity.
+- **Learnings / best practices:** One **`refresh_title`** after each frame keeps HUD consistent in both modes.
+- **Next cycle action items:** In-window text overlay or Godot shell per product.
+
 ## 2026-03-29 (platform P3 — sim in headed window)
 
 - **Accomplished this cycle:** **`aetherforge_window`** drives **`Simulation`** each frame (farm-stub intent loop); **`set_title`** observation HUD; tick-based clear color; **`windowed`** feature enables **`aetherforge_sim/farm-stub`**; **`AETHERFORGE_WINDOW_SEED`**; docs (**`platform-headed-roadmap`** P3, **`getting-started`**, **`phase1d`**, roadmap R2 v3, **`CHANGELOG`**, **`lib.rs`**).

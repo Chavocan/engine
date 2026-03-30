@@ -1,11 +1,14 @@
-//! Headed window: wgpu clear + in-process [`aetherforge_sim::Simulation`] (platform P3).
+//! Headed window: wgpu clear + in-process [`aetherforge_sim::Simulation`] (platform P3–P4).
 //!
 //! Run locally (GPU + display):
 //!   cargo run -p aetherforge_platform --features windowed --bin aetherforge_window
 //!
-//! - Each frame applies the next intent from a short **farm stub** loop (same story as `farm_demo_loop`).
-//! - **Window title** shows tick / mission / farm summary (debug HUD).
-//! - Optional env: `AETHERFORGE_WINDOW_MAX_SEC`, `AETHERFORGE_WINDOW_SEED` (default `42`).
+//! **Input → intent (P4):** **P** / **1** = plant, **D** / **2** = advance day, **H** / **3** = harvest,
+//! **Space** = noop (same kind strings as HTTP / scenario JSON).
+//!
+//! **Auto demo:** `AETHERFORGE_WINDOW_AUTO_DEMO=1` runs the scripted 5-step loop every frame (old behavior).
+//!
+//! Other env: `AETHERFORGE_WINDOW_MAX_SEC`, `AETHERFORGE_WINDOW_SEED` (default `42`).
 
 use std::sync::Arc;
 use std::time::{Duration, Instant};
@@ -15,11 +18,13 @@ use aetherforge_sim::{
 };
 use pollster::block_on;
 use winit::application::ApplicationHandler;
+use winit::event::ElementState;
 use winit::event::WindowEvent;
 use winit::event_loop::{ActiveEventLoop, EventLoop};
+use winit::keyboard::{KeyCode, PhysicalKey};
 use winit::window::{Window, WindowId};
 
-/// Same sequence as `examples/farm_demo_loop.json` (one plant→grow→harvest cycle).
+/// Same sequence as `examples/farm_demo_loop.json` (used when `AETHERFORGE_WINDOW_AUTO_DEMO=1`).
 const FARM_DEMO_INTENTS: &[&str] = &[
     "farm_plant",
     "farm_advance_day",
@@ -28,7 +33,7 @@ const FARM_DEMO_INTENTS: &[&str] = &[
     "farm_harvest",
 ];
 
-fn format_title(obs: &Observation) -> String {
+fn format_title(obs: &Observation, show_keymap: bool) -> String {
     let mut s = format!("AetherForge | tick={}", obs.tick);
     if let Some(m) = &obs.mission {
         let o = match m.outcome {
@@ -47,7 +52,10 @@ fn format_title(obs: &Observation) -> String {
             f.inventory.items.len()
         ));
     }
-    const MAX: usize = 220;
+    if show_keymap {
+        s.push_str(" | P/1 plant D/2 day H/3 harvest Space noop");
+    }
+    const MAX: usize = 240;
     if s.len() > MAX {
         s.truncate(MAX);
         s.push('…');
@@ -76,7 +84,11 @@ struct App {
     window: Option<Arc<Window>>,
     gfx: Option<Gfx>,
     sim: Option<Simulation>,
+    /// When true, cycles `FARM_DEMO_INTENTS` every frame (no keyboard).
+    auto_demo: bool,
     intent_idx: usize,
+    /// Next redraw applies this intent (keyboard-driven).
+    pending_intent: Option<String>,
     start: Option<Instant>,
     max_run: Duration,
 }
@@ -87,11 +99,16 @@ impl App {
             .ok()
             .and_then(|s| s.parse::<u64>().ok())
             .unwrap_or(300);
+        let auto_demo = std::env::var("AETHERFORGE_WINDOW_AUTO_DEMO")
+            .map(|v| v == "1" || v.eq_ignore_ascii_case("true"))
+            .unwrap_or(false);
         Self {
             window: None,
             gfx: None,
             sim: None,
+            auto_demo,
             intent_idx: 0,
+            pending_intent: None,
             start: None,
             max_run: Duration::from_secs(secs.max(1)),
         }
@@ -165,11 +182,20 @@ impl App {
         )));
     }
 
-    fn step_sim_and_title(&mut self) {
-        let Some(sim) = self.sim.as_mut() else {
+    fn refresh_title(&mut self) {
+        let Some(sim) = self.sim.as_ref() else {
             return;
         };
         let Some(w) = self.window.as_ref() else {
+            return;
+        };
+        let obs = sim.snapshot_observation();
+        let title = format_title(&obs, !self.auto_demo);
+        w.set_title(&title);
+    }
+
+    fn step_auto_demo(&mut self) {
+        let Some(sim) = self.sim.as_mut() else {
             return;
         };
         let kind = FARM_DEMO_INTENTS[self.intent_idx % FARM_DEMO_INTENTS.len()];
@@ -178,9 +204,24 @@ impl App {
             kind: kind.to_string(),
         });
         sim.step();
-        let obs = sim.snapshot_observation();
-        let title = format_title(&obs);
-        w.set_title(&title);
+    }
+
+    fn on_frame(&mut self) {
+        if self.auto_demo {
+            self.step_auto_demo();
+        } else if let Some(kind) = self.pending_intent.take() {
+            if let Some(sim) = self.sim.as_mut() {
+                sim.apply_intent(Intent { kind });
+                sim.step();
+            }
+        }
+        self.refresh_title();
+        self.render();
+        if self.auto_demo {
+            if let Some(w) = self.window.as_ref() {
+                w.request_redraw();
+            }
+        }
     }
 
     fn render(&mut self) {
@@ -235,6 +276,31 @@ impl App {
         gfx.surface.configure(&gfx.device, &gfx.config);
     }
 
+    fn queue_intent_from_key(&mut self, physical_key: PhysicalKey) -> bool {
+        if self.auto_demo {
+            return false;
+        }
+        let kind = match physical_key {
+            PhysicalKey::Code(KeyCode::KeyP) | PhysicalKey::Code(KeyCode::Digit1) => {
+                Some("farm_plant")
+            }
+            PhysicalKey::Code(KeyCode::KeyD) | PhysicalKey::Code(KeyCode::Digit2) => {
+                Some("farm_advance_day")
+            }
+            PhysicalKey::Code(KeyCode::KeyH) | PhysicalKey::Code(KeyCode::Digit3) => {
+                Some("farm_harvest")
+            }
+            PhysicalKey::Code(KeyCode::Space) => Some("noop"),
+            _ => None,
+        };
+        if let Some(k) = kind {
+            self.pending_intent = Some(k.to_string());
+            true
+        } else {
+            false
+        }
+    }
+
     fn timeout_exit(&self, event_loop: &ActiveEventLoop) -> bool {
         if self
             .start
@@ -274,6 +340,16 @@ impl ApplicationHandler for App {
             WindowEvent::CloseRequested => {
                 event_loop.exit();
             }
+            WindowEvent::KeyboardInput { event, .. } => {
+                if event.state != ElementState::Pressed || event.repeat {
+                    return;
+                }
+                if self.queue_intent_from_key(event.physical_key) {
+                    if let Some(w) = self.window.as_ref() {
+                        w.request_redraw();
+                    }
+                }
+            }
             WindowEvent::Resized(size) => {
                 self.resize(size.width, size.height);
                 if let Some(w) = self.window.as_ref() {
@@ -281,11 +357,7 @@ impl ApplicationHandler for App {
                 }
             }
             WindowEvent::RedrawRequested => {
-                self.step_sim_and_title();
-                self.render();
-                if let Some(w) = self.window.as_ref() {
-                    w.request_redraw();
-                }
+                self.on_frame();
             }
             _ => {}
         }

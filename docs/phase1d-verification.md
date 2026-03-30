@@ -20,6 +20,7 @@
 | **R1** flagship two-cycle offline → **`won`** | `crates/aetherforge_cli/tests/scenario_flagship_offline.rs` | `flagship_two_cycles_offline_mission_won` — `cargo test -p aetherforge_cli --features farm-stub --test scenario_flagship_offline` |
 | **R4** HTTP flagship + **`expect_mission_outcome`** → **`won`** | CI job **`farm-mission-http-e2e`** (`.github/workflows/ci.yml`) | `cargo run … aetherforge_scenario -- examples/flagship_farm_http.json` vs **`aetherforge_serve`** **`farm-stub`** |
 | **R2** terminal observation HUD (optional farm demo) | Manual / demo | `python python/aetherforge_sdk/examples/observation_hud.py` — requires server; **`--farm-stub-demo`** needs **`farm-stub`** build |
+| **Platform P4** keyboard → same intent kinds as HTTP | Manual / demo | `aetherforge_window` — **P**/1 **D**/2 **H**/3 **Space**; optional **`AETHERFORGE_WINDOW_AUTO_DEMO=1`** |
 | **R3** runtime embedding | [`docs/adr/0004-runtime-embedding.md`](adr/0004-runtime-embedding.md) | ADR **Accepted** — Godot default shell; HTTP contract canonical |
 | **`Observation.mission.outcome`** after stub harvest (**`farm-stub`**) | `crates/aetherforge_sim/src/lib.rs` (`farm_stub_tests`) | `farm_demo_loop_plant_grow_harvest` asserts **`MissionOutcome::Won`** |
 | Empty `actions` array → **400** + `INVALID_BATCH` | same | `batch_empty_actions_returns_400` |

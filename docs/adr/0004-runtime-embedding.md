@@ -17,7 +17,7 @@ The workspace ships a **Rust** simulation kernel, **`aetherforge_serve`** as the
 
 4. **Web-first / thin client** — Valid for dashboards, tools, and lightweight UIs: browser **`fetch`** (or SSE where enabled) against **`aetherforge_serve`**. Same schemas; no special status vs Godot for “official” client — choose by product.
 
-5. **In-repo Rust headed stack** — **`aetherforge_platform`** ships **`aetherforge_window`** (feature **`windowed`**) with in-process **`aetherforge_sim`** and a **title-bar** observation HUD; further phases (input → intent) follow [`platform-headed-roadmap.md`](../platform-headed-roadmap.md). This stack is **engine workspace tooling and experimentation**, not a commitment to ship the flagship farming demo only in Rust+winit.
+5. **In-repo Rust headed stack** — **`aetherforge_platform`** ships **`aetherforge_window`** (feature **`windowed`**) with in-process **`aetherforge_sim`**, **keyboard → `Intent`** kinds aligned with HTTP actions, and a **title-bar** HUD; further work (in-window text, Godot) is optional per [`platform-headed-roadmap.md`](../platform-headed-roadmap.md). This stack is **engine workspace tooling and experimentation**, not a commitment to ship the flagship farming demo only in Rust+winit.
 
 6. **Simulation placement** — **Headless / scripted / CI** use **`aetherforge_sim`** in-process (`aetherforge_headless`, **`aetherforge_scenario --offline`**) or remote HTTP. **Embeddable game runtimes** (Godot, Unity, web) should assume **observation JSON parity** with the HTTP API whether the sim runs in another process or, later, behind an optional embedded library.
 
