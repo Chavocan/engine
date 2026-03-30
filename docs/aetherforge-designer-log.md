@@ -4,6 +4,14 @@ Append-only implementation notes. Mirror bullet labels from `aetherforge-designe
 
 ---
 
+## 2026-03-29 (headed window — `aetherforge_window`)
+
+- **Accomplished this cycle:** Cargo feature **`windowed`**, binary **`aetherforge_window`** (`winit` + `wgpu` clear color); CI **`headed-smoke windowed`** compile; **`platform-headed-roadmap`** P1–P2 done; roadmap R2 **v2**; **`getting-started`**, **`CONTRIBUTING`**, **`phase1d-verification`**, **`director-program-roadmap`**, **`CHANGELOG`**, **`lib.rs`** placeholder text.
+- **Processes used:** `cargo build -p aetherforge_platform --features windowed`; `cargo clippy` on platform.
+- **Pitfalls / observations:** CI does not **run** the window binary (no GPU/display on typical runners).
+- **Learnings / best practices:** Optional **`AETHERFORGE_WINDOW_MAX_SEC`** avoids stuck automation on dev machines.
+- **Next cycle action items:** **Platform P3** sim hook or **R5** NL per product.
+
 ## 2026-03-29 (R2 terminal HUD + R3 ADR 0004)
 
 - **Accomplished this cycle:** **`python/aetherforge_sdk/examples/observation_hud.py`**; **`docs/adr/0004-runtime-embedding.md`**; roadmap **R2** / **R3** rows **done (v1)**; **`platform-headed-roadmap`**, **`director-program-roadmap`**, **`phase1d-verification`**, SDK **`README`**, **`CHANGELOG`**.

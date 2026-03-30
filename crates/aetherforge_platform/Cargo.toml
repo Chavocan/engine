@@ -8,12 +8,20 @@ repository.workspace = true
 [features]
 default = []
 headed-smoke = ["dep:wgpu"]
+windowed = ["dep:wgpu", "dep:winit", "dep:pollster"]
 
 [[bin]]
 name = "aetherforge_wgpu_smoke"
 path = "src/bin/wgpu_smoke.rs"
 required-features = ["headed-smoke"]
 
+[[bin]]
+name = "aetherforge_window"
+path = "src/bin/window.rs"
+required-features = ["windowed"]
+
 [dependencies]
 aetherforge_sim = { path = "../aetherforge_sim" }
+pollster = { version = "0.4", optional = true }
 wgpu = { version = "23", optional = true, default-features = true }
+winit = { version = "0.30.5", optional = true }

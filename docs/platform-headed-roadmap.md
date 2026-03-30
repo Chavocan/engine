@@ -1,15 +1,18 @@
 # Platform — headed client roadmap (post–compile smoke)
 
-**Current:** `aetherforge_platform` provides **`headed-smoke`** / **`aetherforge_wgpu_smoke`** — a headless `wgpu::Instance` compile/run check ([crates/aetherforge_platform](../crates/aetherforge_platform)). `platform_placeholder()` remains the public stub for a full loop.
+**Current:** `aetherforge_platform` provides:
 
-**R2 (Director program):** v1 **client surface** for observation is the Python terminal HUD — [`python/aetherforge_sdk/examples/observation_hud.py`](../python/aetherforge_sdk/examples/observation_hud.py) — not this crate. Phases below remain the **Rust headed** track.
+- **`headed-smoke`** / **`aetherforge_wgpu_smoke`** — headless `wgpu::Instance` compile/run check.
+- **`windowed`** / **`aetherforge_window`** — **`winit`** window + **`wgpu`** swapchain with a **clear-color** frame (960×540 default). Run locally: `cargo run -p aetherforge_platform --features windowed --bin aetherforge_window`. CI **compiles** only (`cargo build --features "headed-smoke windowed"`); it does **not** run the binary on headless runners.
 
-## Planned phases (planning only)
+**R2 (Director program):** v1 **client surface** also includes the Python terminal HUD — [`python/aetherforge_sdk/examples/observation_hud.py`](../python/aetherforge_sdk/examples/observation_hud.py). The Rust window is the **in-repo** graphical viewport; Godot/web remain valid per [**ADR 0004**](adr/0004-runtime-embedding.md).
 
-| Phase | Goal | Acceptance sketch |
-|-------|------|---------------------|
-| P1 | **Window** | `winit` window behind `windowed` feature; event loop exits cleanly on close or timeout; CI skip with documented reason on headless runners (no GPU). |
-| P2 | **Swapchain / clear** | First frame clear color; survives one frame without validation errors on dev machines. |
+## Phases
+
+| Phase | Goal | Status |
+|-------|------|--------|
+| P1 | **Window** | **Done:** feature **`windowed`**, **`aetherforge_window`**, close or **`AETHERFORGE_WINDOW_MAX_SEC`** timeout. |
+| P2 | **Swapchain / clear** | **Done:** single-frame dark-blue clear via wgpu render pass. |
 | P3 | **Sim hook** | Optional pull of `aetherforge_sim` observation snapshot into a debug HUD or log line (parity with headless tick). |
 | P4 | **Input → intent** | Map window/input to the same `Intent` / HTTP path as the control plane (or in-process driver) per ADR. |
 

@@ -37,6 +37,18 @@ Prints **one** JSON observation line — same wire shape as HTTP:
 cargo run -p aetherforge_cli --bin aetherforge_headless
 ```
 
+## 3b. Headed window (GPU + display)
+
+Opens a **960×540** window with a **wgpu** clear color (minimal graphical viewport). Requires a working GPU driver; close the window or set a timeout:
+
+```bash
+cargo run -p aetherforge_platform --features windowed --bin aetherforge_window
+```
+
+Optional auto-close (e.g. for scripts): `AETHERFORGE_WINDOW_MAX_SEC=10` (POSIX) or PowerShell `$env:AETHERFORGE_WINDOW_MAX_SEC=10` before `cargo run`.
+
+CI only **compiles** this target; it does not run it headlessly.
+
 ## 4. Offline scripted loop (farm stub)
 
 Runs a small **plant → grow → harvest** script in-process (no network):

@@ -5,7 +5,7 @@
 
 ## Context
 
-The workspace ships a **Rust** simulation kernel, **`aetherforge_serve`** as the control plane, and optional **`aetherforge_platform`** (wgpu smoke only). Product direction in [`aetherforge-lead-director.agent.md`](../aetherforge-lead-director.agent.md) prefers **Godot 4.x** for a full game client, but the repo does not yet embed a Godot project. We need a **written decision** so agents and forks do not guess per PR.
+The workspace ships a **Rust** simulation kernel, **`aetherforge_serve`** as the control plane, and optional **`aetherforge_platform`** (wgpu smoke plus a minimal **`aetherforge_window`** — winit + wgpu clear). Product direction in [`aetherforge-lead-director.agent.md`](../aetherforge-lead-director.agent.md) prefers **Godot 4.x** for a full game client, but the repo does not yet embed a Godot project. We need a **written decision** so agents and forks do not guess per PR.
 
 ## Decision
 
@@ -17,7 +17,7 @@ The workspace ships a **Rust** simulation kernel, **`aetherforge_serve`** as the
 
 4. **Web-first / thin client** — Valid for dashboards, tools, and lightweight UIs: browser **`fetch`** (or SSE where enabled) against **`aetherforge_serve`**. Same schemas; no special status vs Godot for “official” client — choose by product.
 
-5. **In-repo Rust headed stack** — **`aetherforge_platform`** evolves per [`platform-headed-roadmap.md`](../platform-headed-roadmap.md) (window, swapchain, optional sim hook). It is **engine workspace tooling and experimentation**, not a commitment to ship the flagship farming demo only in Rust+winit.
+5. **In-repo Rust headed stack** — **`aetherforge_platform`** ships **`aetherforge_window`** (feature **`windowed`**) for a minimal viewport; further phases (sim hook, input) follow [`platform-headed-roadmap.md`](../platform-headed-roadmap.md). This stack is **engine workspace tooling and experimentation**, not a commitment to ship the flagship farming demo only in Rust+winit.
 
 6. **Simulation placement** — **Headless / scripted / CI** use **`aetherforge_sim`** in-process (`aetherforge_headless`, **`aetherforge_scenario --offline`**) or remote HTTP. **Embeddable game runtimes** (Godot, Unity, web) should assume **observation JSON parity** with the HTTP API whether the sim runs in another process or, later, behind an optional embedded library.
 

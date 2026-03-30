@@ -23,8 +23,8 @@ jobs:
         run: cargo test -p aetherforge_control --features nl-interpret-stub --test nl_interpret_stub --verbose
       - name: HTTP per-IP rate limit (feature rate-limit)
         run: cargo test -p aetherforge_control --features rate-limit --test http_rate_limit --verbose
-      - name: Headed wgpu smoke (compile only)
-        run: cargo build -p aetherforge_platform --features headed-smoke --verbose
+      - name: Headed platform (wgpu smoke + windowed binary, compile only)
+        run: cargo build -p aetherforge_platform --features "headed-smoke windowed" --verbose
       - name: Player HTTP-only source boundary
         run: bash scripts/check_player_no_sim_import.sh
       - name: Player crate — no aetherforge_sim on runtime edges

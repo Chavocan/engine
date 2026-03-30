@@ -36,6 +36,7 @@ cargo build
 cargo test
 cargo test -p aetherforge_control
 cargo run -p aetherforge_cli --bin aetherforge_headless
+cargo run -p aetherforge_platform --features windowed --bin aetherforge_window
 cargo run -p aetherforge_cli --bin aetherforge_serve
 cargo run -p aetherforge_cli --bin aetherforge_scenario -- --offline examples/scenario-min.json
 cargo run -p aetherforge_cli --bin aetherforge_scenario -- --offline --emit-tick-json examples/scenario-min.json

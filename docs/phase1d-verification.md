@@ -52,7 +52,7 @@
 | Full **observation.schema.json** auto-generation vs Rust | **Action** + **farm** + **`world`** property slices covered by `scripts/check_schema_drift.py` vs fragments; remainder of envelope still hand-maintained. |
 | Concurrent HTTP stress | **24** + **48** parallel actions on one session in **`http_concurrent`**; not a soak/load test or TLS path. |
 | `tracing` JSON subscriber / play-log narrative | Play-log JSON lines tested; full narrative tooling not in 1d scope. |
-| Headed vs headless parity | **wgpu** compile smoke only (`headed-smoke`); full window loop still stub (`platform_placeholder`); see **`docs/platform-headed-roadmap.md`**. |
+| Headed vs headless parity | **`aetherforge_window`** (**`windowed`**) — winit + wgpu clear; sim/render hook still **P3**; see **`docs/platform-headed-roadmap.md`**. |
 
 ## Serve binary
 
