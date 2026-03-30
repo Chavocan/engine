@@ -2,7 +2,7 @@
 
 ## Unreleased
 
-- **Headed UI (R2):** **`aetherforge_window`** (`cargo run -p aetherforge_platform --features windowed --bin aetherforge_window`) — **`winit`** + **`wgpu`** clear-color viewport; env **`AETHERFORGE_WINDOW_MAX_SEC`**; CI compiles with **`headed-smoke windowed`**. **`platform-headed-roadmap.md`** P1–P2 marked done.
+- **Platform P3 / headed UI:** **`aetherforge_window`** — **`winit`** + **`wgpu`** + in-proc **`Simulation`** (farm-stub loop); **title bar** observation HUD; clear color vs tick; env **`AETHERFORGE_WINDOW_SEED`**, **`AETHERFORGE_WINDOW_MAX_SEC`**; CI compiles **`headed-smoke windowed`**. **`platform-headed-roadmap.md`** P1–P3 done.
 - **R2 / R3:** Python **`examples/observation_hud.py`** (terminal HUD); **ADR [`docs/adr/0004-runtime-embedding.md`](docs/adr/0004-runtime-embedding.md)** (Godot vs alternatives; **`aetherforge_serve`** as contract).
 - **Observation farm `inventory`:** JSON Schema + SDK now match Rust wire shape **`inventory.items`** (map of item id → count); fragment **`observation_farm_property.json`** updated.
 - **R1 flagship + R4 HTTP proof:** **`examples/flagship_farm_two_cycles.json`**, **`examples/flagship_farm_http.json`**; **`docs/flagship-scenario.md`**; test **`scenario_flagship_offline`**; CI job **`farm-mission-http-e2e`** ( **`aetherforge_scenario`** HTTP to **`mission.outcome`** **`won`** ).

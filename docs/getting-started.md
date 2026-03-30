@@ -39,13 +39,13 @@ cargo run -p aetherforge_cli --bin aetherforge_headless
 
 ## 3b. Headed window (GPU + display)
 
-Opens a **960×540** window with a **wgpu** clear color (minimal graphical viewport). Requires a working GPU driver; close the window or set a timeout:
+Opens a **960×540** window: **wgpu** clear + in-process **farm-stub** sim (same scripted loop as `farm_demo_loop`). The **title bar** shows tick, mission, and farm fields as a minimal HUD. Requires a GPU driver; close the window or set a timeout:
 
 ```bash
 cargo run -p aetherforge_platform --features windowed --bin aetherforge_window
 ```
 
-Optional auto-close (e.g. for scripts): `AETHERFORGE_WINDOW_MAX_SEC=10` (POSIX) or PowerShell `$env:AETHERFORGE_WINDOW_MAX_SEC=10` before `cargo run`.
+Optional: `AETHERFORGE_WINDOW_SEED` (default `42`), `AETHERFORGE_WINDOW_MAX_SEC` for auto-close (POSIX or PowerShell `$env:…`).
 
 CI only **compiles** this target; it does not run it headlessly.
 

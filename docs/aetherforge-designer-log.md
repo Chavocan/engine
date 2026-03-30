@@ -4,6 +4,14 @@ Append-only implementation notes. Mirror bullet labels from `aetherforge-designe
 
 ---
 
+## 2026-03-29 (platform P3 — sim in headed window)
+
+- **Accomplished this cycle:** **`aetherforge_window`** drives **`Simulation`** each frame (farm-stub intent loop); **`set_title`** observation HUD; tick-based clear color; **`windowed`** feature enables **`aetherforge_sim/farm-stub`**; **`AETHERFORGE_WINDOW_SEED`**; docs (**`platform-headed-roadmap`** P3, **`getting-started`**, **`phase1d`**, roadmap R2 v3, **`CHANGELOG`**, **`lib.rs`**).
+- **Processes used:** `cargo build -p aetherforge_platform --features windowed`; `cargo clippy -p aetherforge_platform --features windowed`.
+- **Pitfalls / observations:** Continuous **`request_redraw`** loop; removed **`about_to_wait`** redraw to avoid redundant wakeups.
+- **Learnings / best practices:** Title bar is a zero-dep “HUD” until in-window text (P4+).
+- **Next cycle action items:** **P4** input mapping or **R5** NL.
+
 ## 2026-03-29 (headed window — `aetherforge_window`)
 
 - **Accomplished this cycle:** Cargo feature **`windowed`**, binary **`aetherforge_window`** (`winit` + `wgpu` clear color); CI **`headed-smoke windowed`** compile; **`platform-headed-roadmap`** P1–P2 done; roadmap R2 **v2**; **`getting-started`**, **`CONTRIBUTING`**, **`phase1d-verification`**, **`director-program-roadmap`**, **`CHANGELOG`**, **`lib.rs`** placeholder text.

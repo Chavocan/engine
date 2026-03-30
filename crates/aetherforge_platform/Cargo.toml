@@ -8,7 +8,13 @@ repository.workspace = true
 [features]
 default = []
 headed-smoke = ["dep:wgpu"]
-windowed = ["dep:wgpu", "dep:winit", "dep:pollster"]
+# `aetherforge_sim/farm-stub`: in-window demo uses the same plant→grow→harvest intents as `farm_demo_loop`.
+windowed = [
+    "dep:wgpu",
+    "dep:winit",
+    "dep:pollster",
+    "aetherforge_sim/farm-stub",
+]
 
 [[bin]]
 name = "aetherforge_wgpu_smoke"

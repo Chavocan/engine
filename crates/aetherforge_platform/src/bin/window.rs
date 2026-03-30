@@ -1,18 +1,69 @@
-//! Headed window with a single wgpu clear color — minimal playable viewport (platform P1/P2).
+//! Headed window: wgpu clear + in-process [`aetherforge_sim::Simulation`] (platform P3).
 //!
-//! Run locally (requires a GPU and display):
+//! Run locally (GPU + display):
 //!   cargo run -p aetherforge_platform --features windowed --bin aetherforge_window
 //!
-//! Optional: `AETHERFORGE_WINDOW_MAX_SEC` (default `300`) exits after N seconds so automation can close.
+//! - Each frame applies the next intent from a short **farm stub** loop (same story as `farm_demo_loop`).
+//! - **Window title** shows tick / mission / farm summary (debug HUD).
+//! - Optional env: `AETHERFORGE_WINDOW_MAX_SEC`, `AETHERFORGE_WINDOW_SEED` (default `42`).
 
 use std::sync::Arc;
 use std::time::{Duration, Instant};
 
+use aetherforge_sim::{
+    Intent, MissionOutcome, Observation, Simulation, SimulationConfig,
+};
 use pollster::block_on;
 use winit::application::ApplicationHandler;
 use winit::event::WindowEvent;
 use winit::event_loop::{ActiveEventLoop, EventLoop};
 use winit::window::{Window, WindowId};
+
+/// Same sequence as `examples/farm_demo_loop.json` (one plant→grow→harvest cycle).
+const FARM_DEMO_INTENTS: &[&str] = &[
+    "farm_plant",
+    "farm_advance_day",
+    "farm_advance_day",
+    "farm_advance_day",
+    "farm_harvest",
+];
+
+fn format_title(obs: &Observation) -> String {
+    let mut s = format!("AetherForge | tick={}", obs.tick);
+    if let Some(m) = &obs.mission {
+        let o = match m.outcome {
+            MissionOutcome::Won => "won",
+            MissionOutcome::Lost => "lost",
+        };
+        s.push_str(&format!(" mission={o}"));
+    }
+    s.push(' ');
+    s.push_str(obs.message.as_str());
+    if let Some(f) = &obs.farm {
+        s.push_str(&format!(
+            " | day={} plots={} inv={}",
+            f.day,
+            f.plots.len(),
+            f.inventory.items.len()
+        ));
+    }
+    const MAX: usize = 220;
+    if s.len() > MAX {
+        s.truncate(MAX);
+        s.push('…');
+    }
+    s
+}
+
+fn clear_for_tick(tick: u64) -> wgpu::Color {
+    let phase = (tick % 64) as f64 / 64.0;
+    wgpu::Color {
+        r: 0.06 + 0.05 * phase,
+        g: 0.09 + 0.04 * (1.0 - phase),
+        b: 0.14 + 0.06 * (0.5 - (phase - 0.5).abs()),
+        a: 1.0,
+    }
+}
 
 struct Gfx {
     surface: wgpu::Surface<'static>,
@@ -24,9 +75,10 @@ struct Gfx {
 struct App {
     window: Option<Arc<Window>>,
     gfx: Option<Gfx>,
+    sim: Option<Simulation>,
+    intent_idx: usize,
     start: Option<Instant>,
     max_run: Duration,
-    painted_once: bool,
 }
 
 impl App {
@@ -38,9 +90,10 @@ impl App {
         Self {
             window: None,
             gfx: None,
+            sim: None,
+            intent_idx: 0,
             start: None,
             max_run: Duration::from_secs(secs.max(1)),
-            painted_once: false,
         }
     }
 
@@ -101,9 +154,41 @@ impl App {
         });
         self.window = Some(window);
         self.start = Some(Instant::now());
+
+        let seed = std::env::var("AETHERFORGE_WINDOW_SEED")
+            .ok()
+            .and_then(|s| s.parse::<u64>().ok())
+            .unwrap_or(42);
+        self.sim = Some(Simulation::with_config(SimulationConfig::new(
+            "headed-window",
+            seed,
+        )));
+    }
+
+    fn step_sim_and_title(&mut self) {
+        let Some(sim) = self.sim.as_mut() else {
+            return;
+        };
+        let Some(w) = self.window.as_ref() else {
+            return;
+        };
+        let kind = FARM_DEMO_INTENTS[self.intent_idx % FARM_DEMO_INTENTS.len()];
+        self.intent_idx = self.intent_idx.saturating_add(1);
+        sim.apply_intent(Intent {
+            kind: kind.to_string(),
+        });
+        sim.step();
+        let obs = sim.snapshot_observation();
+        let title = format_title(&obs);
+        w.set_title(&title);
     }
 
     fn render(&mut self) {
+        let tick = self
+            .sim
+            .as_ref()
+            .map(|s| s.snapshot_observation().tick)
+            .unwrap_or(0);
         let Some(gfx) = self.gfx.as_mut() else {
             return;
         };
@@ -113,6 +198,7 @@ impl App {
         let view = frame
             .texture
             .create_view(&wgpu::TextureViewDescriptor::default());
+        let clear = clear_for_tick(tick);
         let mut encoder = gfx
             .device
             .create_command_encoder(&wgpu::CommandEncoderDescriptor {
@@ -125,12 +211,7 @@ impl App {
                     view: &view,
                     resolve_target: None,
                     ops: wgpu::Operations {
-                        load: wgpu::LoadOp::Clear(wgpu::Color {
-                            r: 0.06,
-                            g: 0.09,
-                            b: 0.16,
-                            a: 1.0,
-                        }),
+                        load: wgpu::LoadOp::Clear(clear),
                         store: wgpu::StoreOp::Store,
                     },
                 })],
@@ -141,7 +222,6 @@ impl App {
         }
         gfx.queue.submit(std::iter::once(encoder.finish()));
         frame.present();
-        self.painted_once = true;
     }
 
     fn resize(&mut self, w: u32, h: u32) {
@@ -201,21 +281,18 @@ impl ApplicationHandler for App {
                 }
             }
             WindowEvent::RedrawRequested => {
+                self.step_sim_and_title();
                 self.render();
+                if let Some(w) = self.window.as_ref() {
+                    w.request_redraw();
+                }
             }
             _ => {}
         }
     }
 
     fn about_to_wait(&mut self, event_loop: &ActiveEventLoop) {
-        if self.timeout_exit(event_loop) {
-            return;
-        }
-        if !self.painted_once {
-            if let Some(w) = self.window.as_ref() {
-                w.request_redraw();
-            }
-        }
+        let _ = self.timeout_exit(event_loop);
     }
 }
 

@@ -18,7 +18,7 @@ Tracks the **Lead Director** mission from [`../aetherforge-lead-director.agent.m
 
 ## Next actions (prioritize in order)
 
-1. **Platform P3** — Sim / observation hook into the headed window ([`platform-headed-roadmap.md`](platform-headed-roadmap.md)).
+1. **Platform P4** — Input → intent (or HTTP) from the headed window ([`platform-headed-roadmap.md`](platform-headed-roadmap.md)).
 2. **R4+** — Deeper **agent** autonomous loop (beyond scenario harness) or additional outcomes / non-stub content as product requires.
 3. **R5** — NL depth where [`nl-agentic-hooks.md`](nl-agentic-hooks.md) milestones demand it.
 4. **Godot or web shell** — out-of-repo client using ADR 0004; keep **`aetherforge_serve`** contract stable.
