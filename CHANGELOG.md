@@ -2,7 +2,7 @@
 
 ## Unreleased
 
-- **Platform headed (`aetherforge_window`):** P1–P4 — **`winit`** + **`wgpu`** + in-proc **`Simulation`**; **title** HUD; keyboard → **`farm_plant`** / **`farm_advance_day`** / **`farm_harvest`** / **`noop`** (**P**/1 **D**/2 **H**/3 **Space**); **`AETHERFORGE_WINDOW_AUTO_DEMO`** auto loop; env seed/max sec; CI compiles **`headed-smoke windowed`**.
+- **Platform headed (`aetherforge_window`):** P1–P4 — **`winit`** + **`wgpu`** + in-proc **`Simulation`**; **title** + **in-window** bitmap text HUD (**`font8x8`** → **`wgpu`** texture overlay); keyboard → **`farm_plant`** / **`farm_advance_day`** / **`farm_harvest`** / **`noop`** (**P**/1 **D**/2 **H**/3 **Space**); **`AETHERFORGE_WINDOW_AUTO_DEMO`** auto loop; env seed/max sec; CI compiles **`headed-smoke windowed`**.
 - **R2 / R3:** Python **`examples/observation_hud.py`** (terminal HUD); **ADR [`docs/adr/0004-runtime-embedding.md`](docs/adr/0004-runtime-embedding.md)** (Godot vs alternatives; **`aetherforge_serve`** as contract).
 - **Observation farm `inventory`:** JSON Schema + SDK now match Rust wire shape **`inventory.items`** (map of item id → count); fragment **`observation_farm_property.json`** updated.
 - **R1 flagship + R4 HTTP proof:** **`examples/flagship_farm_two_cycles.json`**, **`examples/flagship_farm_http.json`**; **`docs/flagship-scenario.md`**; test **`scenario_flagship_offline`**; CI job **`farm-mission-http-e2e`** ( **`aetherforge_scenario`** HTTP to **`mission.outcome`** **`won`** ).

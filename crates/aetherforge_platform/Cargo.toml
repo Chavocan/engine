@@ -13,6 +13,8 @@ windowed = [
     "dep:wgpu",
     "dep:winit",
     "dep:pollster",
+    "dep:font8x8",
+    "dep:bytemuck",
     "aetherforge_sim/farm-stub",
 ]
 
@@ -28,6 +30,8 @@ required-features = ["windowed"]
 
 [dependencies]
 aetherforge_sim = { path = "../aetherforge_sim" }
+bytemuck = { version = "1.22", optional = true, features = ["derive"] }
+font8x8 = { version = "0.3", optional = true, default-features = true, features = ["unicode"] }
 pollster = { version = "0.4", optional = true }
 wgpu = { version = "23", optional = true, default-features = true }
 winit = { version = "0.30.5", optional = true }

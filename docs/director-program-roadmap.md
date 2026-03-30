@@ -12,7 +12,7 @@ Tracks the **Lead Director** mission from [`../aetherforge-lead-director.agent.m
 | 2 | Core engine framework + extension points | v0.1 kernel **done** |
 | 3 | AI designer interface layer | REST + SDK **done**; runtime embedding **ADR 0004**; NL depth **partial** |
 | 4 | Headless AI player and simulation | Player + scenarios **done**; **winning vertical** **done (v1)** (R0 mission + R4 HTTP assert) |
-| 5 | Game creation tools and example game | **Flagship** (R1); **terminal + headed client** (R2) — Python HUD + **`aetherforge_window`** (P1–P4: sim + input→intent) |
+| 5 | Game creation tools and example game | **Flagship** (R1); **terminal + headed client** (R2) — Python HUD + **`aetherforge_window`** (P1–P4: sim + input→intent + in-window bitmap HUD) |
 | 6 | Polish, optimization, documentation | Continuous |
 | 7 | Final validation — full autonomous playthrough | **Partial (v1):** R4 CI HTTP scenario to **`won`**; full **agent** loop still future |
 

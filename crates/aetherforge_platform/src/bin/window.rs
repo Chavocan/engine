@@ -9,6 +9,10 @@
 //! **Auto demo:** `AETHERFORGE_WINDOW_AUTO_DEMO=1` runs the scripted 5-step loop every frame (old behavior).
 //!
 //! Other env: `AETHERFORGE_WINDOW_MAX_SEC`, `AETHERFORGE_WINDOW_SEED` (default `42`).
+//!
+//! **In-window HUD:** bitmap text overlay (font8x8) shows the same state as the title bar.
+
+mod overlay;
 
 use std::sync::Arc;
 use std::time::{Duration, Instant};
@@ -63,6 +67,62 @@ fn format_title(obs: &Observation, show_keymap: bool) -> String {
     s
 }
 
+/// Lines for the bitmap HUD (truncated to match `overlay` raster limits).
+fn hud_lines(obs: &Observation) -> Vec<String> {
+    const MAX_COLS: usize = 96;
+    let trunc = |s: String| -> String {
+        if s.len() <= MAX_COLS {
+            s
+        } else {
+            let mut t = s;
+            t.truncate(MAX_COLS.saturating_sub(1));
+            t.push('…');
+            t
+        }
+    };
+    let mut v = vec![
+        trunc(format!(
+            "AetherForge  tick={}  rng={}",
+            obs.tick, obs.rng_draw
+        )),
+        trunc(obs.message.to_string()),
+    ];
+    if let Some(m) = &obs.mission {
+        let o = match m.outcome {
+            MissionOutcome::Won => "won",
+            MissionOutcome::Lost => "lost",
+        };
+        v.push(trunc(format!("mission: {o}")));
+    }
+    if let Some(f) = &obs.farm {
+        v.push(trunc(format!(
+            "farm day={} time_min={} plots={}",
+            f.day,
+            f.time_minutes,
+            f.plots.len()
+        )));
+        for (i, p) in f.plots.iter().enumerate().take(12) {
+            v.push(trunc(format!(
+                "  [{}] ({},{}) {} st={}",
+                i,
+                p.coord.x,
+                p.coord.y,
+                p.crop.0,
+                p.growth_stage
+            )));
+        }
+        if !f.inventory.items.is_empty() {
+            let mut inv = String::from("inv ");
+            for (k, n) in f.inventory.items.iter() {
+                inv.push_str(&format!("{k}:{n} "));
+            }
+            v.push(trunc(inv));
+        }
+    }
+    v.push("--- P/1 plant D/2 day H/3 harvest Space ---".to_string());
+    v
+}
+
 fn clear_for_tick(tick: u64) -> wgpu::Color {
     let phase = (tick % 64) as f64 / 64.0;
     wgpu::Color {
@@ -78,6 +138,7 @@ struct Gfx {
     device: wgpu::Device,
     queue: wgpu::Queue,
     config: wgpu::SurfaceConfiguration,
+    overlay: overlay::HudOverlay,
 }
 
 struct App {
@@ -163,11 +224,14 @@ impl App {
         };
         surface.configure(&device, &config);
 
+        let hud = overlay::HudOverlay::new(&device, format, width, height);
+
         self.gfx = Some(Gfx {
             surface,
             device,
             queue,
             config,
+            overlay: hud,
         });
         self.window = Some(window);
         self.start = Some(Instant::now());
@@ -225,14 +289,16 @@ impl App {
     }
 
     fn render(&mut self) {
-        let tick = self
-            .sim
-            .as_ref()
-            .map(|s| s.snapshot_observation().tick)
-            .unwrap_or(0);
+        let Some(sim) = self.sim.as_ref() else {
+            return;
+        };
+        let obs = sim.snapshot_observation();
+        let tick = obs.tick;
+        let lines = hud_lines(&obs);
         let Some(gfx) = self.gfx.as_mut() else {
             return;
         };
+        gfx.overlay.set_text(&gfx.queue, &lines);
         let Ok(frame) = gfx.surface.get_current_texture() else {
             return;
         };
@@ -243,10 +309,10 @@ impl App {
         let mut encoder = gfx
             .device
             .create_command_encoder(&wgpu::CommandEncoderDescriptor {
-                label: Some("aetherforge_clear"),
+                label: Some("aetherforge_frame"),
             });
         {
-            let _pass = encoder.begin_render_pass(&wgpu::RenderPassDescriptor {
+            let mut pass = encoder.begin_render_pass(&wgpu::RenderPassDescriptor {
                 label: Some("aetherforge_pass"),
                 color_attachments: &[Some(wgpu::RenderPassColorAttachment {
                     view: &view,
@@ -260,6 +326,7 @@ impl App {
                 occlusion_query_set: None,
                 timestamp_writes: None,
             });
+            gfx.overlay.render_pass(&mut pass);
         }
         gfx.queue.submit(std::iter::once(encoder.finish()));
         frame.present();
@@ -274,6 +341,7 @@ impl App {
         gfx.config.width = w;
         gfx.config.height = h;
         gfx.surface.configure(&gfx.device, &gfx.config);
+        gfx.overlay.resize_with_queue(&gfx.queue, w, h);
     }
 
     fn queue_intent_from_key(&mut self, physical_key: PhysicalKey) -> bool {
